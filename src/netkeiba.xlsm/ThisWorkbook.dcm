@@ -1,0 +1,34 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "ThisWorkbook"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+Private Sub Workbook_Open()
+
+'    éQè∆ê›íË
+'    Microsoft HTML Object Library
+'    Microsoft Internet Controls
+
+    Application.DisplayAlerts = False
+    
+    Dim bh As New ExcelBookHandler
+    Dim sh As New SiteHanlder
+
+    Call sh.defineFileName
+'    Call sh.fetch_kaidaidata
+    
+'
+'    Dim bookNames(1) As String
+'    bookNames(0) = "testaa"
+'    bookNames(1) = "testbb"
+'
+'    bh.setBookNames = bookNames
+'    Call bh.createFoldersAndBooks
+    
+    Application.DisplayAlerts = True
+
+End Sub
