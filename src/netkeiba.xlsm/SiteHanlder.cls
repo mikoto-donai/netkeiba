@@ -12,8 +12,7 @@ Option Explicit
 Private IE As InternetExplorer
 
 '/**
-'* IEƒIƒuƒWƒFƒNƒg‚ğì¬‚µ‚ÄŠY“–ƒTƒCƒg‚ğƒZƒbƒg
-'*
+'* Create IE Object and set the destination URL
 '*/
 Private Sub Class_Initialize()
 
@@ -33,10 +32,10 @@ Private Sub Class_Initialize()
 End Sub
 
 '/**
-'* ƒTƒCƒghtml‚Ìclass–¼‚ğw’è‚µ‚Äƒf[ƒ^‚ğæ“¾
+'* ï¿½Tï¿½Cï¿½ghtmlï¿½ï¿½classï¿½ï¿½ï¿½ï¿½ï¿½wï¿½è‚µï¿½Äƒfï¿½[ï¿½^ï¿½ï¿½ï¿½æ“¾
 '*
-'* @param classNameOnSite ŠY“–ƒTƒCƒg‚ÌƒNƒ‰ƒX–¼
-'* @retrun siteData ƒTƒCƒg‚Ìƒf[ƒ^
+'* @param classNameOnSite ï¿½Yï¿½ï¿½ï¿½Tï¿½Cï¿½gï¿½ÌƒNï¿½ï¿½ï¿½Xï¿½ï¿½
+'* @retrun siteData ï¿½Tï¿½Cï¿½gï¿½Ìƒfï¿½[ï¿½^
 '*
 '*/
 Private Function fetchSiteDataByClassName(classNameOnSite As String)
@@ -60,10 +59,10 @@ Private Function fetchSiteDataByClassName(classNameOnSite As String)
 End Function
 
 '/**
-'* ƒtƒHƒ‹ƒ_AƒuƒbƒN–¼ƒŠƒXƒg‚ğ’è‹`
+'* ï¿½tï¿½Hï¿½ï¿½ï¿½_ï¿½Aï¿½uï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½`
 '*
-'* ex. 0331(“y)---3‰ñ’†R3“ú–Ú
-'*              |-2‰ñã_3“ú–Ú
+'* ex. 0331(ï¿½y)---3ï¿½ñ’†R3ï¿½ï¿½ï¿½ï¿½
+'*              |-2ï¿½ï¿½ï¿½_3ï¿½ï¿½ï¿½ï¿½
 '*
 '*/
 Public Function defineFileName() As Variant
