@@ -32,12 +32,10 @@ Private Sub Class_Initialize()
 End Sub
 
 '/**
-'* �T�C�ghtml��class�����w�肵�ăf�[�^���擾
-'*
-'* @param classNameOnSite �Y���T�C�g�̃N���X��
-'* @retrun siteData �T�C�g�̃f�[�^
-'*
+'* @param classNameOnSite
+'* @retrun siteData
 '*/
+
 Private Function fetchSiteDataByClassName(classNameOnSite As String)
 
     Dim htmlDoc As HTMLDocument: Set htmlDoc = IE.document
@@ -59,10 +57,6 @@ Private Function fetchSiteDataByClassName(classNameOnSite As String)
 End Function
 
 '/**
-'* �t�H���_�A�u�b�N�����X�g���`
-'*
-'* ex. 0331(�y)---3�񒆎R3����
-'*              |-2���_3����
 '*
 '*/
 Public Function defineFileName() As Variant
@@ -94,5 +88,3 @@ Public Function defineFileName() As Variant
      fetchSiteDataByClassName ("kaisaidata")
 
 End Function
-
-
