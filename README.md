@@ -57,7 +57,8 @@ http://race.netkeiba.com/?pid=yoso&id=p201805010701
 
 ## メール送信
 - O365 SMTPサービスを利用します。  
-  - 
+  - アカウント: keiba.keiba@outlook.com  
+  
 - コマンドプロンプトでメール送信を行います。  
 `powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
 
