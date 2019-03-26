@@ -1,22 +1,18 @@
-$mail = @{
-    from = "tmichiuc@gmail.com";
-    to = "tmichiuc@gmail.com";
-    attachment = "C:\Users\tmichiuc\Desktop\netkeiba\results.pdf";
-    smtp_server = "smtp.gmail.com";
-    smtp_port = 587;
-    user = "tmichiuc";
-    password = "hgldrjieectinqmg";
-}
+$o365User = "keiba.keiba@outlook.com";
+$o365Pass = "abiek2019"
+$from    = "keiba.keiba@outlook.com";
+$to      = "michiuchi59@gmail.com";
+$mailServer = "smtp.office365.com";
+$port ="587"
+$subject = "netkeiba";
+$body    = "";
+$attachment = "README.md"
 
-$password = ConvertTo-SecureString $mail["password"] -AsPlainText -Force
-$credential = New-Object System.Management.Automation.PSCredential $mail["user"], $password
+$msg = New-Object System.Net.Mail.MailMessage($from, $to, $subject, $body);
+$msg.Attachments.Add($attachment);
 
-Send-MailMessage -To $mail["to"] `
-                 -From $mail["from"] `
-                 -SmtpServer $mail["smtp_server"] `
-                 -Credential $credential `
-                 -Attachment $mail["attachment"] `
-                 -Subject "netkeibaデータ加工テスト" `
-                 -Body "test" `
-                 -Encoding ([System.Text.Encoding]::UTF8) `
-                 -UseSsl
+$SMTPClient = New-Object Net.Mail.SmtpClient($mailServer, $port) ;
+
+$SMTPClient.EnableSsl = $true;
+$SMTPClient.Credentials = New-Object System.Net.NetworkCredential($o365User, $o365Pass);
+$SMTPClient.send($msg);
