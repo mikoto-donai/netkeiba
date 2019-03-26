@@ -6,7 +6,7 @@
 - O365 SMTPサービス
 
 ## 機能概要
-### 操作手順
+### 動作
 
 1. フォルダ、EXCELファイルの作成
 本体Excelブックのマクロが実行されると、下記のようにディレクトリが作成されます。  
@@ -24,7 +24,7 @@ http://race.netkeiba.com/?pid=yoso&id=c{year}{place}{number}{date}{race}
 
 ### URLパラメータ
 
-データ取得対象のURLは下記です。
+データ取得対象のURLは下記です。  
 http://race.netkeiba.com/?pid=yoso&id=c{year}{place}{number}{date}{race}
 
 URLの各変数は下記に従います。
