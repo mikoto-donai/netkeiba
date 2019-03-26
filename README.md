@@ -18,13 +18,10 @@
 1. 下記サイトURLが存在するかを確認します  
 http://race.netkeiba.com/?pid=yoso&id=c{year}{place}{number}{date}{race}  
 
-### サイトURL
+### URLパラメータ
 
-下記サイトからデータを取得します。  
+データ取得対象のURLは下記です。
 http://race.netkeiba.com/?pid=yoso&id=c{year}{place}{number}{date}{race}
-
-ex. 18/02/17 1回東京7日目
-http://race.netkeiba.com/?pid=yoso&id=p201805010701  
 
 URLの各変数は下記に従います。
 
@@ -35,6 +32,9 @@ URLの各変数は下記に従います。
 | number | 開催次数を表します | 01: 1回目  |
 | date | 開催日を表します     | 02: 2日目  |
 | race | 開催レースを表します  | 12: 12R   |
+
+ex. 18/02/17 1回東京7日目
+http://race.netkeiba.com/?pid=yoso&id=p201805010701 
 
 ## Excelファイルの作成
 金曜日、土曜日のそれぞれ23:00に、該当データが存在すればバッチ処理で下記の通り作成します。
