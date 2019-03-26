@@ -1,5 +1,9 @@
 ## 概要
 
+## 環境
+- Windows10 Professional
+- MS EXCEL
+- O365 SMTPサービス
 
 ## 機能概要
 ### 操作手順
@@ -51,8 +55,11 @@ http://race.netkeiba.com/?pid=yoso&id=p201805010701
 ファイル名: 2018050101.xls
 シート名: 1R, 2R, ・・・, 12R
 
-### バッチファイルの作成
-Windows PowerShell スクリプトを利用します。
+## メール送信
+- O365 SMTPサービスを利用します。  
+  - 
+- コマンドプロンプトでメール送信を行います。  
+`powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
 
-### メールAPI
-GmailのAPIを利用します。
+- タスクスケジューラでバッチ処理を行います
+
