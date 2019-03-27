@@ -9,21 +9,21 @@
 ### 動作
 
 1. EXCELファイルの作成  
-本体Excelブックのマクロが実行されると、下記のようにディレクトリが作成されます。  
+netkeiba.xlsm を起動してマクロが実行されると、下記のようにディレクトリが作成されます。  
 
-  本体Excelブック
-  |
-  日時フォルダ(フォルダ名: システム日付_当日の累積起動回数)  
-    |--- Excelブック(ファイル名:開催日、シート:レース番号)  
-    |--- Excelブック(ファイル名:開催日、シート:レース番号)  
+  netkeiba.xlsm
+  |  
+  フォルダ(フォルダ名: システム日付_当日の累積起動回数)  
+    |--- Excelブック(ファイル名:開催日、シート名:レース番号)  
+    |--- Excelブック(ファイル名:開催日、シート名:レース番号)  
     |--- ••• 
     
 例
   netkeiba.xlsm  
   |  
   20180901_01  
-  |_ 20180901.xlsx  
-  |_ 20180902.xlsx  
+  |_ 20180501.xlsx (Sheet1:12)
+  |_ 20180502.xlsx  
 
 1. フォルダ作成  
 Excelと同じ位置に、システム日付でフォルダを作成します  
@@ -51,7 +51,16 @@ URLの各変数は下記に従います。
 ex. 18/02/17 1回東京7日目
 http://race.netkeiba.com/?pid=yoso&id=p201805010701 
 
-## Excelファイルの作成
+## メール送信
+- O365 SMTPサービスを利用します。  
+  - アカウント: keiba.keiba@outlook.com  
+  
+- コマンドプロンプトでメール送信を行います。  
+`powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
+
+## バッチ処理
+タスクスケジューラでバッチ処理を行います
+
 金曜日、土曜日のそれぞれ23:00に、該当データが存在すればバッチ処理で下記の通り作成します。
 
 - フォルダ名: {year}{month}{date}_{created_number}
@@ -60,18 +69,4 @@ http://race.netkeiba.com/?pid=yoso&id=p201805010701
 
 * {create_number}
 取得回数を表します。
-
-例
-フォルダ名: 20180501_1
-ファイル名: 2018050101.xls
-シート名: 1R, 2R, ・・・, 12R
-
-## メール送信
-- O365 SMTPサービスを利用します。  
-  - アカウント: keiba.keiba@outlook.com  
-  
-- コマンドプロンプトでメール送信を行います。  
-`powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
-
-- タスクスケジューラでバッチ処理を行います
 
