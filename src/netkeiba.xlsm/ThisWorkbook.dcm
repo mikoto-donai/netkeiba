@@ -15,7 +15,7 @@ Private Sub Workbook_Open()
 
     Application.DisplayAlerts = False
     
-    Dim bh As New ExcelBookHandler
+    Dim bh As New DirectoryHandler
     Dim sh As New SiteHanlder
 
     Call sh.defineFileName
