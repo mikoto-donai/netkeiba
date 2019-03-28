@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private IE As InternetExplorer
+Private IE As Object
 
 '/**
 '* Create IE Object and set the destination URL
@@ -25,7 +25,7 @@ Private Sub Class_Initialize()
     Dim siteURL As String: siteURL = "http://race.netkeiba.com/?pid=race_list&id=c0408"
     IE.navigate siteURL
     
-    Do While IE.Busy = True Or IE.readyState < READYSTATE_COMPLETE
+    Do While IE.Busy = True Or IE.readyState <> 4
         DoEvents
     Loop
 
@@ -38,7 +38,7 @@ End Sub
 
 Private Function fetchSiteDataByClassName(classNameOnSite As String)
 
-    Dim htmlDoc As HTMLDocument: Set htmlDoc = IE.document
+    Dim htmlDoc As Object: Set htmlDoc = IE.document
     Dim elements As Object: Set elements = htmlDoc.getElementsByClassName(classNameOnSite)
     
     Dim element As Variant

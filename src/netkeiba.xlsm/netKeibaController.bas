@@ -8,7 +8,7 @@ End Function
 
 Function importData()
 
-    With ActiveSheet.QueryTables.Add(Connection:="URL;http://race.netkeiba.com/?pid=race_list&id=c0303", Destination:=Range("$A$1"))
+    With ActiveSheet.QueryTables.Add(Connection:="URL;https://race.netkeiba.com/?pid=yoso&id=p201906030101", Destination:=Range("$A$1"))
         .name = "?kd=1&tm=d&vl=a&mk=1&p=1"
         .FieldNames = True
         .RowNumbers = False
