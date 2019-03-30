@@ -8,18 +8,24 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Private Sub Workbook_Open()
-
-'    éQè∆ê›íË
-'    Microsoft HTML Object Library
-'    Microsoft Internet Controls
-
+    
     Application.DisplayAlerts = False
     
-    Dim bh As New DirectoryHandler
-    Dim sh As New SiteHanlder
 
-    Call sh.defineFileName
+    
+'    Dim bh As New DirectoryHandler
+'    Dim sh As New SiteHanlder
+    Dim rl As New RaceList
+    rl.importRaceList
+'    rl.defineRaceDates
+'    rl.defineRaceInformation
+    rl.defineURLs
+    
+
+
+'    Call sh.defineFileName
 '    Call sh.fetch_kaidaidata
+    
     
 '
 '    Dim bookNames(1) As String
