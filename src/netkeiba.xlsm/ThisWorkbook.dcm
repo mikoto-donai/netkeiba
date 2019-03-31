@@ -10,19 +10,11 @@ Attribute VB_Exposed = True
 Private Sub Workbook_Open()
     
     Application.DisplayAlerts = False
-    
 
+    Dim rc As New Race
+    rc.defineURLs
+    rc.defineRaceDates
     
-'    Dim bh As New DirectoryHandler
-'    Dim sh As New SiteHanlder
-    Dim rl As New RaceList
-    rl.fetchRaceList
-'    rl.defineRaceDates
-'    rl.defineRaceInformation
-    rl.defineURLs
-    
-
-
 '    Call sh.defineFileName
 '    Call sh.fetch_kaidaidata
     
