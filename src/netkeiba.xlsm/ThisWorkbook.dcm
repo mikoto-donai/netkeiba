@@ -16,7 +16,7 @@ Private Sub Workbook_Open()
 '    Dim bh As New DirectoryHandler
 '    Dim sh As New SiteHanlder
     Dim rl As New RaceList
-    rl.importRaceList
+    rl.fetchRaceList
 '    rl.defineRaceDates
 '    rl.defineRaceInformation
     rl.defineURLs
