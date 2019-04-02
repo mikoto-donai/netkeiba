@@ -7,7 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Private Const url_netkeiba As String = "https://race.netkeiba.com/?pid=race_list"
+Option Explicit
+
+Private Const url_netkeiba_race_list As String = "https://race.netkeiba.com/?pid=race_list"
 Private Const LAST_RACE_NUMBER As Integer = 12
 Private url_parameters As Object
 Private race_dates As Object
@@ -20,9 +22,9 @@ End Sub
 Private Function fetchRaceList()
 
     With ThisWorkbook.Sheets(1).QueryTables.Add(Connection:= _
-        "URL;" & url_netkeiba, Destination:=Range( _
+        "URL;" & url_netkeiba_race_list, Destination:=Range( _
         "$A$1"))
-        .Name = "?pid=race_list&id=c0331"
+        .Name = url_netkeiba_race_list
         .FieldNames = True
         .RowNumbers = False
         .FillAdjacentFormulas = False
@@ -108,7 +110,7 @@ Private Function makeBaseURLParameters() As Object
     End If
     
     Dim next_racing_date As Range: Set next_racing_date = racing_date
-    Dim base_url_parametes As Object
+    Dim base_url_parameters As Object
     Set base_url_parameters = CreateObject("System.Collections.ArrayList")
     
     base_url_parameters.Add (convertRacingDate(racing_date.Value))
@@ -126,7 +128,7 @@ Private Function makeBaseURLParameters() As Object
         
         base_url_parameters.Add (convertRacingDate(next_racing_date.Value))
     Loop
-    
+
     Set makeBaseURLParameters = base_url_parameters
 
 End Function
@@ -135,7 +137,8 @@ Private Function makeURLParameters(base_url_parameters_ As Object) As Integer
 
     Set url_parameters = CreateObject("System.Collections.ArrayList")
     
-    
+    Dim i As Integer: i = 0
+    Dim j As Integer: j = 1
     For i = 0 To base_url_parameters_.Count - 1
         For j = 1 To LAST_RACE_NUMBER
             url_parameters.Add (Year(Now) & base_url_parameters_(i) & Format(j, "00"))
@@ -158,7 +161,7 @@ ErrorHandler:
     MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
 End Function
 
-Public Function defineRaceDates()
+Public Function defineRaceDates() As Object
     On Error GoTo ErrorHandler
 
     Dim title_race_date As Range
@@ -178,8 +181,38 @@ Public Function defineRaceDates()
             nextRow = nextRow + 1
         End If
     Loop
+    Debug.Print race_dates(3)
+    Set defineRaceDates = race_dates
     
-    Exit Function
 ErrorHandler:
     MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
 End Function
+
+Public Function fetchRacePrediction(url_netkeiba_prediction_parameter As String)
+
+    With ThisWorkbook.Sheets(2).QueryTables.Add(Connection:= _
+        "URL;https://race.netkeiba.com/?pid=yoso&id=c" & url_netkeiba_prediction_parameter, Destination:=ThisWorkbook.Sheets(2).Range("$A$1"))
+        .Name = "url_netkeiba_prediction_parameter"
+        .FieldNames = True
+        .RowNumbers = False
+        .FillAdjacentFormulas = False
+        .PreserveFormatting = True
+        .RefreshOnFileOpen = False
+        .BackgroundQuery = True
+        .RefreshStyle = xlInsertDeleteCells
+        .SavePassword = False
+        .SaveData = True
+        .AdjustColumnWidth = True
+        .RefreshPeriod = 0
+        .WebSelectionType = xlAllTables
+        .WebFormatting = xlWebFormattingNone
+        .WebPreFormattedTextToColumns = True
+        .WebConsecutiveDelimitersAsOne = True
+        .WebSingleBlockTextImport = False
+        .WebDisableDateRecognition = False
+        .WebDisableRedirections = False
+        .Refresh BackgroundQuery:=False
+    End With
+
+End Function
+

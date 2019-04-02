@@ -11,15 +11,23 @@ Private Sub Workbook_Open()
     
     Application.DisplayAlerts = False
 
-    Dim rc As New Race
-    rc.defineURLs
-    rc.defineRaceDates
+    Dim race_ As New race
+    race_.defineURLs
+
+    Dim file_names_ As Object
+'    o_Race.fetchRacePrediction ("201906030608")
     
-'    Call sh.defineFileName
-'    Call sh.fetch_kaidaidata
+    Dim directory_ As New directory
+    Dim output_path As String: output_path = Environ("HOMEPATH") & "\" & "Desktop"
+    directory_.cofigureOutputPath (output_path)
     
+    Dim folder_name As String: folder_name = Format(Date, "yyyymmdd")
+    Dim race_dates As Object
+    Set race_dates = race_.defineRaceDates
     
-'
+    If Not directory_.createFiles(folder_name, race_dates) Then
+    End If
+
 '    Dim bookNames(1) As String
 '    bookNames(0) = "testaa"
 '    bookNames(1) = "testbb"
