@@ -25,18 +25,17 @@ Private Function createFolder()
 
 End Function
 
-Private Function createFile(folder_name, file_ame_)
+Private Function createFile(file_name_)
     
     Dim FSO As Object
     Set FSO = CreateObject("Scripting.FileSystemObject")
+    
+    Dim file_path As String: file_path = output_path & "\" & folder_name & "\" & Replace(file_name_, "/", "") & ".xlsx"
 
-    Dim path As String
-    path = output_path & folderPath_ & "\" & fileName_ & ".xlsx"
-
-    If Not FSO.FileExists(path) Then
-        Dim file As Workfile
-        Set file = Workfiles.Add
-        file.SaveAs basePath & "\" & folderPath_ & "\" & fileName_
+    If Not FSO.FileExists(file_path) Then
+        Dim file As Object
+        Set file = Workbooks.Add
+        file.SaveAs file_path
         file.Close
         Set file = Nothing
     End If
@@ -44,7 +43,13 @@ Private Function createFile(folder_name, file_ame_)
 End Function
 
 Public Function cofigureOutputPath(output_path_ As String)
+On Error GoTo ErrorHandler
+
     output_path = output_path_
+    
+Exit Function
+ErrorHandler:
+    MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
 End Function
 
 Public Function createFiles(folder_name_ As String, file_names_ As Object) As Boolean
@@ -56,10 +61,11 @@ On Error GoTo ErrorHandler
     
     Dim i As Integer
     For i = 0 To file_names.Count - 1
-        Debug.Print file_names(i)
-'       createFile (file_names(i))
+       createFile (file_names(i))
     Next
+    
 createFiles = True
 Exit Function
-: ErrorHandler
+ErrorHandler:
+    MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
 End Function

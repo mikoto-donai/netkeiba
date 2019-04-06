@@ -181,9 +181,9 @@ Public Function defineRaceDates() As Object
             nextRow = nextRow + 1
         End If
     Loop
-    Debug.Print race_dates(3)
+
     Set defineRaceDates = race_dates
-    
+    Exit Function
 ErrorHandler:
     MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "ÉGÉâÅ["
 End Function
