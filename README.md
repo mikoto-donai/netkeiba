@@ -21,13 +21,13 @@ netkeiba.xlsm を起動してマクロが実行されると、下記のように
 例
   netkeiba.xlsm  
   |  
-  20180901_01  
+  2018001_01  
   |_ 20180501.xlsx (Sheet1:12)
   |_ 20180502.xlsx  
 
-1. フォルダ作成  
-Excelと同じ位置に、システム日付でフォルダを作成します  
-フォルダ名{year}{month}{event_date}_{created_number}を作成します  
+フォルダ名: {year}{month}{event_date}_{created_number}  
+ファイル: {year}{times}{event_date}.xlsx
+
 
 1. URL確認
 下記サイトURLが存在するかを確認します  
