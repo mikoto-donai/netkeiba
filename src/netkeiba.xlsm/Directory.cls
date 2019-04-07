@@ -9,9 +9,9 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private output_path As String
-Private folder_name As String
-Private file_names As Object
+Private output_path_ As String
+Private folder_name_ As String
+Private file_names_ As Object
 
 Private Sub Class_Initialize()
     
@@ -19,18 +19,18 @@ End Sub
 
 Private Function createFolder()
 
-    If Dir(output_path & "\" & folder_name, vbDirectory) = "" Then
-        MkDir output_path & "\" & folder_name
+    If Dir(output_path_ & "\" & folder_name_, vbDirectory) = "" Then
+        MkDir output_path_ & "\" & folder_name_
     End If
 
 End Function
 
-Private Function createFile(file_name_)
+Private Function createFile(file_name)
     
     Dim FSO As Object
     Set FSO = CreateObject("Scripting.FileSystemObject")
     
-    Dim file_path As String: file_path = output_path & "\" & folder_name & "\" & Replace(file_name_, "/", "") & ".xlsx"
+    Dim file_path As String: file_path = output_path_ & "\" & folder_name_ & "\" & Replace(file_name, "/", "") & ".xlsx"
 
     If Not FSO.FileExists(file_path) Then
         Dim file As Object
@@ -42,26 +42,26 @@ Private Function createFile(file_name_)
     
 End Function
 
-Public Function cofigureOutputPath(output_path_ As String)
+Public Function cofigureOutputPath(output_path As String)
 On Error GoTo ErrorHandler
 
-    output_path = output_path_
+    output_path_ = output_path
     
 Exit Function
 ErrorHandler:
     MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "ÉGÉâÅ["
 End Function
 
-Public Function createFiles(folder_name_ As String, file_names_ As Object) As Boolean
+Public Function createFiles(folder_name As String, file_names As Object) As Boolean
 On Error GoTo ErrorHandler
 
-    folder_name = folder_name_
-    Set file_names = file_names_
+    folder_name_ = folder_name
+    Set file_names_ = file_names
     createFolder
     
     Dim i As Integer
-    For i = 0 To file_names.Count - 1
-       createFile (file_names(i))
+    For i = 0 To file_names_.Count - 1
+       createFile (file_names_(i))
     Next
     
 createFiles = True
