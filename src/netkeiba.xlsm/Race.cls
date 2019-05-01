@@ -9,19 +9,155 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Const LAST_RACE_NUMBER_ As Integer = 12
-Private url_parameters_() As String
-Private race_dates_() As String
+Private race_lists_() As String     '04/20(土), 04/21(日),
+Private race_list_parameters_() As String       'p0420, c0421, n0422,
+Private current_race_list_parameters_() As String       'c0420, c0421,
+Private race_dates_() As String      '2回東京4日目, 3回京都3日目,
+Private race_date_parameters_() As String      '201905020101, 201905020102,
+Private current_race_names() As String    '0420(土)2回東京4日目, 0420(土)3回京都3日目, 0421(日)2回東京5日目, 0421(日)3回京都6日目
 Private url_parameter_predictions_ As Object
 
 Private Sub Class_Initialize()
     
 End Sub
 
-Private Function convertRacingDate(ByVal racing_date As String) As String
+'Public Function extractEventInfo(ByRef fetched_items() As String) As String
+'    On Error GoTo ErrorHandler
+'
+'    Dim i As Long
+'    For i = 0 To UBound(fetched_items())
+'        If fetched_items(i) = "開催情報" Then
+'            Dim event_info As String
+'            event_info = Mid(fetched_items(i + 1), InStr(fetched_items(i + 1), "(") + 1, 5)
+'
+'            Dim formatted_event_info
+'            formatted_event_info = Format(Trim(event_info), "mmdd")
+'
+'            Exit For
+'        End If
+'    Next
+'
+'    extractEventInfo = event_info
+'
+'    Exit Function
+'ErrorHandler:
+'    Debug.Print Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
+'End Function
+
+Private Function createRaceLists(ByRef fetched_items() As String) As String()
+
+    Dim i As Long: i = 0
+    ReDim race_lists_(0)
+    
+    For i = 0 To UBound(fetched_items())
+        If fetched_items(i) = "開催日程" Then
+            Do
+                If InStr(fetched_items(i + UBound(race_lists_()) + 1), "/") = 0 Then
+                    ReDim Preserve race_lists_(UBound(race_lists_()) - 1)
+                    Exit Do
+                End If
+                race_lists_(UBound(race_lists_())) = fetched_items(i + UBound(race_lists_()) + 1)
+                ReDim Preserve race_lists_(UBound(race_lists_()) + 1)
+            Loop
+            Exit For
+        End If
+    Next
+
+    createRaceLists = race_lists_()
+    
+End Function
+
+Private Function createRaceListParameters(ByRef fetched_items() As String) As Long
+    
+    If UBound(fetched_items()) = 0 Then
+        createRaceListParameters = -1
+    End If
+    
+    race_lists_() = createRaceLists(fetched_items())
+    ReDim race_list_parameters_(UBound(race_lists_()))
+    
+    Dim i As Long
+    For i = 0 To UBound(race_lists_())
+        race_list_parameters_(i) = convertRaceListParameter(race_lists_(i))
+    Next
+    
+    createRaceListParameters = 0
+
+End Function
+
+Public Function createCurrentRaceListParameters(ByRef fetched_items() As String) As String()
+
+    If createRaceListParameters(fetched_items()) = -1 Then
+    End If
+    
+    ReDim current_race_list_parameters_(0)
+    Dim i As Long
+    For i = 0 To UBound(race_lists_())
+        If Left(race_list_parameters_(i), 1) = "c" Then
+            current_race_list_parameters_(UBound(current_race_list_parameters_())) = race_list_parameters_(i)
+            ReDim Preserve current_race_list_parameters_(UBound(current_race_list_parameters_()) + 1)
+        End If
+    Next
+    
+    If UBound(current_race_list_parameters_()) > 0 Then
+        ReDim Preserve current_race_list_parameters_(UBound(current_race_list_parameters_()) - 1)
+    End If
+    
+    createCurrentRaceListParameters = current_race_list_parameters_()
+    
+End Function
+
+Private Function convertRaceListParameter(ByRef race_list As String) As String
+
+     Dim pre_conversion_parameter As String
+     pre_conversion_parameter = Left(race_list, 5)
+     
+     If DateDiff("d", Date, CDate(pre_conversion_parameter)) > 7 Then
+        pre_conversion_parameter = "n" & pre_conversion_parameter
+     ElseIf DateDiff("d", Date, CDate(pre_conversion_parameter)) <= 7 And DateDiff("d", Date, CDate(pre_conversion_parameter)) > 0 Then
+        pre_conversion_parameter = "c" & pre_conversion_parameter
+     ElseIf DateDiff("d", Date, CDate(pre_conversion_parameter)) < 0 And DateDiff("d", Date, CDate(pre_conversion_parameter)) > -7 Then
+        pre_conversion_parameter = "p" & pre_conversion_parameter
+     Else
+        pre_conversion_parameter = "n" & pre_conversion_parameter
+     End If
+     
+     convertRaceListParameter = Left(Replace(pre_conversion_parameter, "/", ""), 5)
+     
+End Function
+
+Public Function createRaceDates(ByRef fetched_items() As String) As String()
+    
+    race_dates_() = Filter(fetched_items(), "日目")
+    createRaceDates = race_dates_()
+    
+End Function
+
+Public Function createRaceDatesParameters() As Long
+    On Error GoTo ErrorHandler
+    
+    ReDim race_date_parameters_(UBound(race_dates_()), LAST_RACE_NUMBER_)
+    
+    Const LAST_RACE_NUMBER_ As Integer = 12
+    Dim i As Long
+    Dim j As Long
+    For i = 0 To UBound(race_dates_())
+        For j = 0 To LAST_RACE_NUMBER_ - 1
+            race_date_parameters_(i, j) = (Year(Now) & convertRaceDate(race_dates_(i)) & Format(j + 1, "00"))
+        Next
+    Next
+   
+    createRaceDatesParameters = 0
+    Exit Function
+ErrorHandler:
+    Debug.Print Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
+    createRaceDatesParameters = 1
+End Function
+
+Private Function convertRaceDate(ByVal race_date As String) As String
     
     Dim times As String
-    times = Left(racing_date, InStr(racing_date, "回") - 1)
+    times = Left(race_date, InStr(race_date, "回") - 1)
     
     Dim formatted_times As String
     formatted_times = Format(times, "00")
@@ -29,36 +165,36 @@ Private Function convertRacingDate(ByVal racing_date As String) As String
     Dim venue As String
     Dim event_date As String
     Select Case True
-        Case racing_date Like "*札幌*"
+        Case race_date Like "*札幌*"
             venue = "01"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "札幌")), "日目", "")
-        Case racing_date Like "*函館*"
+            event_date = Replace(Right(race_date, InStr(race_date, "札幌")), "日目", "")
+        Case race_date Like "*函館*"
             venue = "02"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "函館")), "日目", "")
-        Case racing_date Like "*福島*"
+            event_date = Replace(Right(race_date, InStr(race_date, "函館")), "日目", "")
+        Case race_date Like "*福島*"
             venue = "03"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "福島")), "日目", "")
-        Case racing_date Like "*新潟*"
+            event_date = Replace(Right(race_date, InStr(race_date, "福島")), "日目", "")
+        Case race_date Like "*新潟*"
             venue = "04"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "新潟")), "日目", "")
-        Case racing_date Like "*東京*"
+            event_date = Replace(Right(race_date, InStr(race_date, "新潟")), "日目", "")
+        Case race_date Like "*東京*"
             venue = "05"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "東京")), "日目", "")
-        Case racing_date Like "*中山*"
+            event_date = Replace(Right(race_date, InStr(race_date, "東京")), "日目", "")
+        Case race_date Like "*中山*"
             venue = "06"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "中山")), "日目", "")
-        Case racing_date Like "*中京*"
+            event_date = Replace(Right(race_date, InStr(race_date, "中山")), "日目", "")
+        Case race_date Like "*中京*"
             venue = "07"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "中京")), "日目", "")
-        Case racing_date Like "*京都*"
+            event_date = Replace(Right(race_date, InStr(race_date, "中京")), "日目", "")
+        Case race_date Like "*京都*"
             venue = "08"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "京都")), "日目", "")
-        Case racing_date Like "*阪神*"
+            event_date = Replace(Right(race_date, InStr(race_date, "京都")), "日目", "")
+        Case race_date Like "*阪神*"
             venue = "09"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "阪神")), "日目", "")
-        Case racing_date Like "*小倉*"
+            event_date = Replace(Right(race_date, InStr(race_date, "阪神")), "日目", "")
+        Case race_date Like "*小倉*"
             venue = "10"
-            event_date = Replace(Right(racing_date, InStr(racing_date, "小倉")), "日目", "")
+            event_date = Replace(Right(race_date, InStr(race_date, "小倉")), "日目", "")
         Case Else
             Err.Raise number:=513, Description:="レース情報の変換でエラーが発生しました"
     End Select
@@ -66,83 +202,14 @@ Private Function convertRacingDate(ByVal racing_date As String) As String
     Dim formatted_event_date As String
     formatted_event_date = Format(event_date, "00")
 
-    convertRacingDate = venue & formatted_times & formatted_event_date
+    convertRaceDate = venue & formatted_times & formatted_event_date
 
 End Function
 
-Public Function createUrlParameters(ByVal elements As Variant)
-    On Error GoTo ErrorHandler
+Public Function createCurrentRaceNames() As String
+
     
-    Dim racing_dates() As String
-    racing_dates = Filter(elements, "日目")
-    
-    ReDim url_parameters_(LAST_RACE_NUMBER_)
-    
-    Dim i As Long: i = 1
-    Dim j As Long: j = 1
-    For i = 1 To UBound(racing_dates)
-        For j = 1 To LAST_RACE_NUMBER_
-            url_parameters_(i) = (Year(Now) & convertRacingDate(racing_dates(i)) & Format(j, "00"))
-        Next
-    Next
 
-    Exit Function
-ErrorHandler:
-    MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
-End Function
-
-Public Function extractRaceDates(ByVal elements As Variant) As String()
-    On Error GoTo ErrorHandler
-
-    Dim i As Long: i = 1
-    Dim j As Long: j = 1
-    ReDim race_dates_(1)
-    For i = 1 To UBound(elements)
-        If elements(i) = "開催日程" Then
-            Do
-                race_dates_(UBound(race_dates_)) = elements(i + j)
-                If InStr(elements(i + j + 1), "/") = 0 Then
-                    Exit Do
-                End If
-                ReDim Preserve race_dates_(UBound(race_dates_) + 1)
-                j = j + 1
-            Loop
-            Exit For
-        End If
-    Next
-
-    extractRaceDates = race_dates_()
-    
-    Exit Function
-ErrorHandler:
-    MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
-End Function
-
-Private Function fetchRacePrediction(destination_sheet As Object)
-'ThisWorkbook.Sheets(2).Range("$A$1")
-    With ThisWorkbook.Sheets(2).QueryTables.Add(Connection:= _
-        "URL;https://race.netkeiba.com/?pid=yoso&id=c" & url_parameter_prediction_, destination:=destination_sheet)
-        .Name = "URL_NETKEIBA_PREDICTION_PARAMETER"
-        .FieldNames = True
-        .RowNumbers = False
-        .FillAdjacentFormulas = False
-        .PreserveFormatting = True
-        .RefreshOnFileOpen = False
-        .BackgroundQuery = True
-        .RefreshStyle = xlInsertDeleteCells
-        .SavePassword = False
-        .SaveData = True
-        .AdjustColumnWidth = True
-        .RefreshPeriod = 0
-        .WebSelectionType = xlAllTables
-        .WebFormatting = xlWebFormattingNone
-        .WebPreFormattedTextToColumns = True
-        .WebConsecutiveDelimitersAsOne = True
-        .WebSingleBlockTextImport = False
-        .WebDisableDateRecognition = False
-        .WebDisableRedirections = False
-        .Refresh BackgroundQuery:=False
-    End With
 
 End Function
 

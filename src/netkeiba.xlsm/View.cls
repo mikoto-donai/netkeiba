@@ -9,9 +9,12 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private Sub Class_Initialize()
-    ThisWorkbook.Sheets(1).Cells.Clear
+    Application.DisplayAlerts = False
 End Sub
-Public Function fetchItems(url As String) As String()
+Public Function fetchItems(ByVal url As String) As String()
+
+    Workbooks("netkeiba.xlsm").Sheets("fetched_data").Cells.Clear
+    Workbooks("netkeiba.xlsm").Activate
 
     With ThisWorkbook.Sheets(1).QueryTables.Add( _
          Connection:="URL;" & url, _
@@ -53,6 +56,39 @@ Public Function fetchItems(url As String) As String()
     
 End Function
 
+Private Function fetchRacePrediction(ByRef destination_sheet As Object)
+
+Workbooks("netkeiba.xlsm").Sheets("fetched_data").Cells.Clear
+Workbooks("netkeiba.xlsm").Activate
+
+
+'ThisWorkbook.Sheets(2).Range("$A$1")
+    With ThisWorkbook.Sheets(2).QueryTables.Add(Connection:= _
+        "URL;https://race.netkeiba.com/?pid=yoso&id=c" & url_parameter_prediction_, destination:=destination_sheet)
+        .Name = "URL_NETKEIBA_PREDICTION_PARAMETER"
+        .FieldNames = True
+        .RowNumbers = False
+        .FillAdjacentFormulas = False
+        .PreserveFormatting = True
+        .RefreshOnFileOpen = False
+        .BackgroundQuery = True
+        .RefreshStyle = xlInsertDeleteCells
+        .SavePassword = False
+        .SaveData = True
+        .AdjustColumnWidth = True
+        .RefreshPeriod = 0
+        .WebSelectionType = xlAllTables
+        .WebFormatting = xlWebFormattingNone
+        .WebPreFormattedTextToColumns = True
+        .WebConsecutiveDelimitersAsOne = True
+        .WebSingleBlockTextImport = False
+        .WebDisableDateRecognition = False
+        .WebDisableRedirections = False
+        .Refresh BackgroundQuery:=False
+    End With
+
+End Function
+
 Function exporReportAsHTML()
 
     With ActiveWorkbook.PublishObjects.Add(xlSourceSheet, ActiveWorkbook.path & "\results.html", "Sheet1", "", xlHtmlStatic, "image")
@@ -73,3 +109,7 @@ Function exportReportAsPDF()
     ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=ActiveWorkbook.path & "\results.pdf"
 
 End Function
+
+Private Sub Class_Terminate()
+        Application.DisplayAlerts = True
+End Sub

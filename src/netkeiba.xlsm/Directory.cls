@@ -11,7 +11,7 @@ Option Explicit
 
 Private output_path_ As String
 Private folder_name_ As String
-Private file_names_ As Object
+Private file_names_() As String
 
 Private Sub Class_Initialize()
     
@@ -21,11 +21,15 @@ Private Function createFolder()
 
     If Dir(output_path_ & "\" & folder_name_, vbDirectory) = "" Then
         MkDir output_path_ & "\" & folder_name_
+        createFolder = 0
+        Exit Function
     End If
+    
+    createFolder = 1
 
 End Function
 
-Private Function createFile(file_name As String)
+Private Function createFile(file_name As String) As Long
     
     Dim file_system_object As Object
     Set file_system_object = CreateObject("Scripting.FileSystemObject")
@@ -38,7 +42,15 @@ Private Function createFile(file_name As String)
         file.SaveAs file_path
         file.Close
         Set file = Nothing
+        
+        
+        
+        
+        createFile = 0
+        Exit Function
     End If
+    
+    createFile = 1
     
 End Function
 
@@ -52,16 +64,21 @@ ErrorHandler:
     MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
 End Function
 
-Public Function createFiles(ByVal folder_name As String, ByVal file_names As Variant) As Boolean
+Public Function createFiles(ByVal folder_name As String, ByRef file_names() As String) As Boolean
 On Error GoTo ErrorHandler
 
     folder_name_ = folder_name
-    Set file_names_ = file_names
-    createFolder
+    file_names_() = file_names()
+    
+    If createFolder = 0 Then
+        Debug.Print "フォルダを作成しました"
+    End If
     
     Dim i As Integer
-    For i = 0 To file_names_.Count - 1
-       createFile (file_names_(i))
+    For i = 1 To UBound(file_names_())
+        If createFile(file_names_(i)) = 0 Then
+            Debug.Print ("開催日:" & file_names(i) & "のファイルを作成しました")
+        End If
     Next
     
 createFiles = True
