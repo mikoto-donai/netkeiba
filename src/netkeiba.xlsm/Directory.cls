@@ -12,12 +12,35 @@ Option Explicit
 Private output_path_ As String
 Private folder_name_ As String
 Private file_names_() As String
+Private contents_() As String
 
 Private Sub Class_Initialize()
     
 End Sub
 
-Private Function createFolder()
+Public Property Let outputPath(ByVal output_path As String)
+    output_path_ = output_path
+End Property
+
+Public Property Let folderName(ByVal folder_name As String)
+    folder_name_ = folder_name
+End Property
+
+Public Property Let fileNames(ByRef file_names() As String)
+    file_names_() = file_names()
+End Property
+
+Public Function createFiles()
+
+    If createFolder() <> 0 Then
+    End If
+    
+    If createExcelFiles() <> 0 Then
+    End If
+
+End Function
+
+Private Function createFolder() As Long
 
     If Dir(output_path_ & "\" & folder_name_, vbDirectory) = "" Then
         MkDir output_path_ & "\" & folder_name_
@@ -25,64 +48,34 @@ Private Function createFolder()
         Exit Function
     End If
     
-    createFolder = 1
+    createFolder = 0
 
 End Function
 
-Private Function createFile(file_name As String) As Long
+Private Function createExcelFiles() As Long
     
     Dim file_system_object As Object
     Set file_system_object = CreateObject("Scripting.FileSystemObject")
-    
-    Dim file_path As String: file_path = output_path_ & "\" & folder_name_ & "\" & Replace(file_name, "/", "") & ".xlsx"
 
-    If Not file_system_object.FileExists(file_path) Then
-        Dim file As Object
-        Set file = Workbooks.Add
-        file.SaveAs file_path
-        file.Close
-        Set file = Nothing
+    Dim file_path As String
+    Dim b_book As New Book
+    Dim i As Long
+    For i = LBound(file_names_()) To UBound(file_names_())
+        file_path = output_path_ & "\" & folder_name_ & "\" & Replace(file_names_(i), "/", "") & ".xlsx"
         
-        
-        
-        
-        createFile = 0
-        Exit Function
-    End If
-    
-    createFile = 1
-    
-End Function
-
-Public Function cofigureOutputPath(ByVal output_path As String)
-On Error GoTo ErrorHandler
-
-    output_path_ = output_path
-    
-Exit Function
-ErrorHandler:
-    MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
-End Function
-
-Public Function createFiles(ByVal folder_name As String, ByRef file_names() As String) As Boolean
-On Error GoTo ErrorHandler
-
-    folder_name_ = folder_name
-    file_names_() = file_names()
-    
-    If createFolder = 0 Then
-        Debug.Print "フォルダを作成しました"
-    End If
-    
-    Dim i As Integer
-    For i = 1 To UBound(file_names_())
-        If createFile(file_names_(i)) = 0 Then
-            Debug.Print ("開催日:" & file_names(i) & "のファイルを作成しました")
+        If Not file_system_object.FileExists(file_path) Then
+            Dim file As Object
+            Set file = Workbooks.Add
+            b_book.targetSheet = file.Worksheets(1)
+            b_book.url = "https://race.netkeiba.com/?pid=top"
+            b_book.fetchItems
+            file.SaveAs file_path
+            file.Close
+            Set file = Nothing
         End If
     Next
+
+    createExcelFiles = 0
     
-createFiles = True
-Exit Function
-ErrorHandler:
-    MsgBox Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
 End Function
+
