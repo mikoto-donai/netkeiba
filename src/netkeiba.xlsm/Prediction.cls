@@ -9,53 +9,42 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private race_dates_() As String      '1回新潟3日目, 2回東京5日目
-Private prediction_parameters_() As String   'c201905020501, c201905020501
-Private predictions_() As Variant    '?pid=yoso&id={prediction_parameter} で得られる予想データ / 2次元配列: predictions(race_date, race_number)
+Public Enum RACE_NUMBER
+    FIRST = 1
+    LAST = 12
+End Enum
 
-Public Property Let raceDates(ByRef race_dates() As String)
-    race_dates_() = race_dates()
-End Property
+Private prediction_parameters_() As Variant   '各レースの競馬予想URLパラメータ: prediction_parameters_(race_date, race_number)  / ex.  prediction_parameters_(0, 10) : 201905020701
+Private prediction_race_dates_() As String    'pid=yoso&id={prediction_parameter} で得られる競馬予想データ: predictions_targets(race_date, race_number)  /  ex.  predictions_targets(0, 10) : 2回東京7日目:11R
+Private predictions_() As Variant    'pid=yoso&id={prediction_parameter} で得られる競馬予想データ: predictions_(race_date, race_number)  /  ex.  predictions_(0, 10) : 2回東京7日目:11R の予想データRangeオブジェクト
 
-Public Property Get predictionParameters() As String()
-    predictionParameters = prediction_parameters_()
-End Property
-
-Public Property Let predictions(ByRef predictions() As Variant)
-    predictions_() = predictions()
+Public Property Get predictionRaceDates() As String()
+    predictionRaceDates = prediction_race_dates_()
 End Property
 
 Public Property Get predictions() As Variant()
     predictions = predictions_()
 End Property
 
-Public Function analyzeItems()
+Public Function analyzeItems(ByRef current_race_dates() As String)
     
-    If createPredictionParameters <> 0 Then
+    If createPredictionParameters(current_race_dates()) <> 0 Then
     End If
     
-End Function
-
-Private Function fetchRacePredictions(url_parameter_predictions)
-
-    Dim i As Integer
-    For i = 0 To race_dates_.counts - 1
-        Debug.Print url_parameter_predictions_(i)
-        fetchRacePrediction (url_parameter_predictions_(i))
-    Next
+    If fetchPredictions(current_race_dates()) <> 0 Then
+    End If
 
 End Function
 
-Private Function createPredictionParameters() As Long
+Private Function createPredictionParameters(ByRef current_race_dates() As String) As Long
 
-    Const LAST_RACE_NUMBER_ As Integer = 12
-    ReDim prediction_parameters_(UBound(race_dates_()), LAST_RACE_NUMBER_)
+    ReDim prediction_parameters_(UBound(current_race_dates()), RACE_NUMBER.LAST - 1)
     
     Dim i As Long
     Dim j As Long
-    For i = LBound(race_dates_()) To UBound(race_dates_())
-        For j = 0 To LAST_RACE_NUMBER_ - 1
-            prediction_parameters_(i, j) = (Year(Now) & convertRaceDateIntoParameters(race_dates_(i)) & Format(j + 1, "00"))
+    For i = LBound(current_race_dates()) To UBound(current_race_dates())
+        For j = 0 To RACE_NUMBER.LAST - 1
+            prediction_parameters_(i, j) = (Year(Now) & convertRaceDateIntoParameters(current_race_dates(i)) & Format(j + 1, "00"))
         Next
     Next
    
@@ -63,10 +52,10 @@ Private Function createPredictionParameters() As Long
 
 End Function
 
-Private Function convertRaceDateIntoParameters(ByVal race_date As String) As String
+Private Function convertRaceDateIntoParameters(ByVal current_race_date As String) As String
     
     Dim times As String
-    times = Left(race_date, InStr(race_date, "回") - 1)
+    times = Left(current_race_date, InStr(current_race_date, "回") - 1)
     
     Dim formatted_times As String
     formatted_times = Format(times, "00")
@@ -74,36 +63,36 @@ Private Function convertRaceDateIntoParameters(ByVal race_date As String) As Str
     Dim venue As String
     Dim event_date As String
     Select Case True
-        Case race_date Like "*札幌*"
+        Case current_race_date Like "*札幌*"
             venue = "01"
-            event_date = Replace(Right(race_date, InStr(race_date, "札幌")), "日目", "")
-        Case race_date Like "*函館*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "札幌")), "日目", "")
+        Case current_race_date Like "*函館*"
             venue = "02"
-            event_date = Replace(Right(race_date, InStr(race_date, "函館")), "日目", "")
-        Case race_date Like "*福島*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "函館")), "日目", "")
+        Case current_race_date Like "*福島*"
             venue = "03"
-            event_date = Replace(Right(race_date, InStr(race_date, "福島")), "日目", "")
-        Case race_date Like "*新潟*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "福島")), "日目", "")
+        Case current_race_date Like "*新潟*"
             venue = "04"
-            event_date = Replace(Right(race_date, InStr(race_date, "新潟")), "日目", "")
-        Case race_date Like "*東京*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "新潟")), "日目", "")
+        Case current_race_date Like "*東京*"
             venue = "05"
-            event_date = Replace(Right(race_date, InStr(race_date, "東京")), "日目", "")
-        Case race_date Like "*中山*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "東京")), "日目", "")
+        Case current_race_date Like "*中山*"
             venue = "06"
-            event_date = Replace(Right(race_date, InStr(race_date, "中山")), "日目", "")
-        Case race_date Like "*中京*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "中山")), "日目", "")
+        Case current_race_date Like "*中京*"
             venue = "07"
-            event_date = Replace(Right(race_date, InStr(race_date, "中京")), "日目", "")
-        Case race_date Like "*京都*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "中京")), "日目", "")
+        Case current_race_date Like "*京都*"
             venue = "08"
-            event_date = Replace(Right(race_date, InStr(race_date, "京都")), "日目", "")
-        Case race_date Like "*阪神*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "京都")), "日目", "")
+        Case current_race_date Like "*阪神*"
             venue = "09"
-            event_date = Replace(Right(race_date, InStr(race_date, "阪神")), "日目", "")
-        Case race_date Like "*小倉*"
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "阪神")), "日目", "")
+        Case current_race_date Like "*小倉*"
             venue = "10"
-            event_date = Replace(Right(race_date, InStr(race_date, "小倉")), "日目", "")
+            event_date = Replace(Right(current_race_date, InStr(current_race_date, "小倉")), "日目", "")
         Case Else
             Err.Raise number:=513, Description:="レース情報の変換でエラーが発生しました"
     End Select
@@ -115,7 +104,38 @@ Private Function convertRaceDateIntoParameters(ByVal race_date As String) As Str
 
 End Function
 
+Private Function fetchPredictions(ByRef current_race_dates() As String) As Long
 
+    ReDim prediction_race_dates_(UBound(prediction_parameters_, 1), UBound(prediction_parameters_, 2))
+    ReDim predictions_(UBound(prediction_parameters_, 1), UBound(prediction_parameters_, 2))
+
+    Dim i As Integer
+    Dim j As Integer
+    Dim o_fetcher As New fetcher
+    Const web_selection_type As String = xlAllTables
+    
+    For i = LBound(prediction_parameters_, 1) To UBound(prediction_parameters_, 1)
+'    If i = 1 Then
+'        Exit For
+'    End If
+        For j = LBound(prediction_parameters_, 2) To UBound(prediction_parameters_, 2)
+            
+            o_fetcher.url = "https://race.netkeiba.com/?pid=yoso&id=c" & prediction_parameters_(i, j)
+            o_fetcher.targetSheet = ThisWorkbook.Sheets("fetched_data")
+            o_fetcher.fetchItems web_selection_type
+            
+            If Not IsEmpty(o_fetcher.items) Then
+                predictions_(i, j) = o_fetcher.items
+            End If
+            
+            prediction_race_dates_(i, j) = current_race_dates(i) & ":" & j + 1 & "R"
+            
+        Next
+    Next
+    
+    fetchPredictions = 0
+    
+End Function
 
 
 

@@ -9,34 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private items_() As String
-Private event_date_ As String    '5/04(“ú)
-Private race_dates_() As String      '2‰ñ“Œ‹ž4“ú–Ú, 3‰ñ‹ž“s3“ú–Ú,
+Private current_race_dates_() As String
 Private event_and_race_dates_() As String    '0420(“y)2‰ñ“Œ‹ž4“ú–Ú, 0420(“y)3‰ñ‹ž“s3“ú–Ú, 0421(“ú)2‰ñ“Œ‹ž5“ú–Ú, 0421(“ú)3‰ñ‹ž“s6“ú–Ú
-
 Private Sub Class_Initialize()
     
 End Sub
-
-Public Property Let items(ByRef items() As String)
-    items_() = items()
+Public Property Get currentRaceDates() As String()
+    currentRaceDates = current_race_dates_()
 End Property
 
-Public Property Let EventDate(ByVal event_date As String)
-    event_date_ = event_date
-End Property
-
-Public Property Get eventAndRaceDates() As String()
-    eventAndRaceDates = event_and_race_dates_()
-End Property
-
-Public Function analyzeItems()
+Public Function analyzeItems(ByRef current_race_event_parameters() As String)
 On Error GoTo ErrorHandler
     
-    If createRaceDates() <> 0 Then
-    End If
-    
-    If createEventAndRaceDates() <> 0 Then
+    If createCurrentRaceDates(current_race_event_parameters()) <> 0 Then
     End If
     
     Exit Function
@@ -46,23 +31,36 @@ ErrorHandler:
     
 End Function
 
-Private Function createRaceDates() As Long
+Private Function createCurrentRaceDates(ByRef current_race_event_parameters() As String) As Long
     
-    race_dates_() = Filter(items_(), "“ú–Ú")
-    createRaceDates = 0
+    ReDim current_race_dates_(0)
+    Dim o_fetcher As New fetcher
+    Dim i As Integer
+    
+    For i = LBound(current_race_event_parameters()) To UBound(current_race_event_parameters())
+        o_fetcher.url = "https://race.netkeiba.com/?pid=race_list&id=" & current_race_event_parameters(i)
+        o_fetcher.targetSheet = ThisWorkbook.Sheets(1)
+        o_fetcher.fetchItems
+        createCurrentRaceDate o_fetcher.items
+    Next
+    
+    If UBound(current_race_dates_()) > 0 Then
+        ReDim Preserve current_race_dates_(UBound(current_race_dates_()) - 1)
+    End If
     
 End Function
 
-Private Function createEventAndRaceDates() As Long
-    
-    ReDim event_and_race_dates_(UBound(race_dates_()))
+Private Function createCurrentRaceDate(ByRef items As Variant) As Long
     
     Dim i As Long
-    For i = LBound(race_dates_()) To UBound(race_dates_())
-        event_and_race_dates_(i) = Replace(event_date_, "/", "") & race_dates_(i)
+    For i = LBound(items, 1) To UBound(items, 1)
+        If InStr(items(i, 1), "“ú–Ú") > 0 Then
+            current_race_dates_(UBound(current_race_dates_())) = items(i, 1)
+            ReDim Preserve current_race_dates_(UBound(current_race_dates_()) + 1)
+        End If
     Next
     
-    createEventAndRaceDates = 0
-
+    createCurrentRaceDate = 0
+    
 End Function
 

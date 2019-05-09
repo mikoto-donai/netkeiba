@@ -11,11 +11,12 @@ Option Explicit
 
 Private output_path_ As String
 Private folder_name_ As String
-Private file_names_() As String
-Private contents_() As String
+Private file_names_() As String     'contents_('ファイル名インデックス', 'シート名インデックス') 　　ex. file_names_(0,0)  ファイル0, シート0の名前
+Private contents_() As Variant    'contents_('ファイル名インデックス', 'シート名インデックス') 　　ex. contents_(0,0)  ファイル0, シート0のRangeオブジェクト
 
 Private Sub Class_Initialize()
-    
+    Me.outputPath = Environ("HOMEPATH") & "\" & "Desktop"
+    Me.folderName = Format(Date, "yyyymmdd")
 End Sub
 
 Public Property Let outputPath(ByVal output_path As String)
@@ -27,7 +28,11 @@ Public Property Let folderName(ByVal folder_name As String)
 End Property
 
 Public Property Let fileNames(ByRef file_names() As String)
-    file_names_() = file_names()
+   file_names_() = file_names()
+End Property
+
+Public Property Let contents(ByRef contents() As Variant)
+    contents_() = contents()
 End Property
 
 Public Function createFiles()
@@ -58,17 +63,29 @@ Private Function createExcelFiles() As Long
     Set file_system_object = CreateObject("Scripting.FileSystemObject")
 
     Dim file_path As String
-    Dim b_book As New Book
+    Application.SheetsInNewWorkbook = 1
     Dim i As Long
-    For i = LBound(file_names_()) To UBound(file_names_())
-        file_path = output_path_ & "\" & folder_name_ & "\" & Replace(file_names_(i), "/", "") & ".xlsx"
+    Dim j As Long
+    
+    For i = LBound(file_names_(), 1) To UBound(file_names_(), 1)
+        If file_names_(i, 0) = "" Then
+            createExcelFiles = 1
+            Exit Function
+        End If
+        file_path = output_path_ & "\" & folder_name_ & "\" & Left(file_names_(i, 0), 7) & ".xlsx"
         
         If Not file_system_object.FileExists(file_path) Then
             Dim file As Object
             Set file = Workbooks.Add
-            b_book.targetSheet = file.Worksheets(1)
-            b_book.url = "https://race.netkeiba.com/?pid=top"
-            b_book.fetchItems
+            
+            For j = LBound(file_names_(), 2) To UBound(file_names_(), 2)
+                If Not IsEmpty(contents_(i, j)) Then
+                    ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).Value = contents_(i, j)
+                    ActiveWorkbook.ActiveSheet.Name = Replace(file_names_(i, j), ":", "")
+                    ActiveWorkbook.Worksheets.Add after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count)
+                End If
+            Next
+
             file.SaveAs file_path
             file.Close
             Set file = Nothing

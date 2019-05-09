@@ -3,58 +3,25 @@ Option Explicit
 
 Public Static Function main()
 
-    Dim f_event As New Fetcher
-    f_event.targetSheet = ThisWorkbook.Sheets(1)
-    f_event.url = "https://race.netkeiba.com/?pid=top"
-    f_event.fetchItems
+    Application.DisplayAlerts = False
 
-    Dim e_event As New EventDate
-    e_event.items() = f_event.items()
-    e_event.analyzeItems
- 
-    Dim d_directory As New directory
+    Dim o_fetcher As New fetcher
+    o_fetcher.fetchItems
+
+    Dim o_race_event As New raceEvent
+    o_race_event.analyzeItems o_fetcher.items
+
+    Dim o_race_date As New RaceDate
+    o_race_date.analyzeItems o_race_event.current_race_event_parameters
+
+    Dim o_prediction As New Prediction
+    o_prediction.analyzeItems o_race_date.currentRaceDates
     
-    d_directory.outputPath = Environ("HOMEPATH") & "\" & "Desktop"
-    d_directory.folderName = Format(Date, "yyyymmdd")
+    Dim o_directory As New directory
+    o_directory.fileNames = o_prediction.predictionRaceDates
+    o_directory.contents = o_prediction.predictions
+    o_directory.createFiles
 
-    Dim r_race As New RaceDate
-    Dim f_race As New Fetcher
-    
-    Dim i As Long
-    For i = LBound(e_event.current_event_dates()) To UBound(e_event.current_event_dates())
-        
-        f_race.url = "https://race.netkeiba.com/?pid=race_list&id=" & e_event.current_event_dates_parameters()(i)
-        f_race.targetSheet = ThisWorkbook.Sheets(1)
-        f_race.fetchItems
-        r_race.items() = f_race.items()
-        r_race.EventDate = e_event.current_event_dates()(i)
-        r_race.analyzeItems
-        
-        
-        d_directory.fileNames() = r_race.eventAndRaceDates()
-        d_directory.createFiles
-        
-    Next
-
+    Application.DisplayAlerts = True
 
 End Function
-
-
-'Function test2()
-'    Dim p_prediction As New Prediction
-'    Dim race_dates() As String
-'    ReDim race_dates(1)
-'    race_dates(0) = "2‰ñ“Œ‹ž4“ú–Ú"
-'    race_dates(1) = "2‰ñ“Œ‹ž5“ú–Ú"
-'    p_prediction.raceDates() = race_dates()
-'    p_prediction.analyzeItems
-'    Debug.Print p_prediction.predictionParameters()(0, 3)
-'
-'    Dim buf() As Variant
-'    ReDim buf(1, 11)
-'    buf(0, 1) = Range("A1:A20").Value
-'    buf(1, 2) = Range("A5:A20").Value
-'    p_prediction.predictions = buf
-'    Range("F6:F10").Value = p_prediction.predictions()(1, 2)
-'
-'End Function

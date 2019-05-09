@@ -10,10 +10,10 @@ Attribute VB_Exposed = False
 Option Explicit
 Private url_ As String
 Private target_sheet_ As Object
-Private items_() As String
-
+Private items_ As Variant    'リモートから取得してセルに展開した内容
 Private Sub Class_Initialize()
-    Application.DisplayAlerts = False
+    Me.targetSheet = ThisWorkbook.Sheets("fetched_data")
+    Me.url = "https://race.netkeiba.com"
 End Sub
 
 Public Property Let url(ByVal url As String)
@@ -24,12 +24,12 @@ Public Property Let targetSheet(ByRef target_sheet As Object)
     Set target_sheet_ = target_sheet
 End Property
 
-Public Property Get items() As String()
-    items = items_()
+Public Property Get items() As Variant
+    items = items_
 End Property
 
-Public Function fetchItems()
-
+Public Function fetchItems(Optional ByVal web_selection_type As String = xlEntirePage)
+    
     target_sheet_.Cells.Clear
     
     With target_sheet_.QueryTables.Add( _
@@ -47,7 +47,7 @@ Public Function fetchItems()
         .SaveData = False
         .AdjustColumnWidth = True
         .RefreshPeriod = 0
-        .WebSelectionType = xlEntirePage
+        .WebSelectionType = web_selection_type
         .WebFormatting = xlWebFormattingNone
         .WebPreFormattedTextToColumns = True
         .WebConsecutiveDelimitersAsOne = True
@@ -57,48 +57,7 @@ Public Function fetchItems()
         .Refresh BackgroundQuery:=False
     End With
     
-    Dim items_size As Long
-    items_size = target_sheet_.UsedRange.Rows.Count
-    
-    ReDim items_(items_size)
-    
-    Dim i As Long
-    For i = 1 To items_size
-        items_(i) = target_sheet_.Cells(i, 1).Value
-    Next
-    
-End Function
-
-Private Function fetchRacePrediction(ByRef destination_sheet As Object)
-
-Workbooks("netkeiba.xlsm").Sheets("fetched_data").Cells.Clear
-Workbooks("netkeiba.xlsm").Activate
-
-
-'ThisWorkbook.Sheets(2).Range("$A$1")
-    With ThisWorkbook.Sheets(2).QueryTables.Add(Connection:= _
-        "URL;https://race.netkeiba.com/?pid=yoso&id=c" & url_parameter_prediction_, destination:=destination_sheet)
-        .Name = "URL_NETKEIBA_PREDICTION_PARAMETER"
-        .FieldNames = True
-        .RowNumbers = False
-        .FillAdjacentFormulas = False
-        .PreserveFormatting = True
-        .RefreshOnFileOpen = False
-        .BackgroundQuery = True
-        .RefreshStyle = xlInsertDeleteCells
-        .SavePassword = False
-        .SaveData = True
-        .AdjustColumnWidth = True
-        .RefreshPeriod = 0
-        .WebSelectionType = xlAllTables
-        .WebFormatting = xlWebFormattingNone
-        .WebPreFormattedTextToColumns = True
-        .WebConsecutiveDelimitersAsOne = True
-        .WebSingleBlockTextImport = False
-        .WebDisableDateRecognition = False
-        .WebDisableRedirections = False
-        .Refresh BackgroundQuery:=False
-    End With
+    items_ = target_sheet_.UsedRange
 
 End Function
 
@@ -122,7 +81,3 @@ Function exportReportAsPDF()
     ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=ActiveWorkbook.path & "\results.pdf"
 
 End Function
-
-Private Sub Class_Terminate()
-        Application.DisplayAlerts = True
-End Sub
