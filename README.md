@@ -30,13 +30,6 @@ netkeiba.xlsm を起動してマクロが実行されると、下記のように
 下記サイトURLが存在するかを確認します  
 http://race.netkeiba.com/?pid=yoso&id=c{year}{venue}{times}{event_date}{race_number}  
 
-## メール送信
-- O365 SMTPサービスを利用します。  
-  - アカウント: keiba.keiba@outlook.com  
-  
-- コマンドプロンプトでメール送信を行います。  
-`powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
-
 ## バッチ処理
 タスクスケジューラでバッチ処理を行います
 
@@ -45,6 +38,13 @@ http://race.netkeiba.com/?pid=yoso&id=c{year}{venue}{times}{event_date}{race_num
 - フォルダ名: 
 - ファイル名: {year}{venue}{times}{event_date}
 - シート名: {race}
+
+## メール送信
+- O365 SMTPサービスを利用します。  
+  - アカウント: keiba.keiba@outlook.com  
+  
+- コマンドプロンプトでメール送信を行います。  
+`powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
 
 
 ## コーディング規約
