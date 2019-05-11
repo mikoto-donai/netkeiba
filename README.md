@@ -47,7 +47,14 @@ http://race.netkeiba.com/?pid=yoso&id=c{year}{venue}{times}{event_date}{race_num
 `powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
 
 
-# コーディング規約
+# 管理方法
+## ソース管理
+vbacを利用する
+`cscript vbac ファイル名 decombine`
+`cscript vbac ファイル名 combine`
+
+
+## コーディング規約
 - 全体
   - プロシージャ(Sub)を使わない
   - メソッド(Function)で統一する
