@@ -49,9 +49,9 @@ http://race.netkeiba.com/?pid=yoso&id=c{year}{venue}{times}{event_date}{race_num
 
 # 管理方法
 ## ソース管理
-vbacを利用する
-`cscript vbac ファイル名 decombine`
-`cscript vbac ファイル名 combine`
+vbacを利用して、テキストファイルの状態でGitで管理する
+- Excelからテキストファイルに `cscript vbac ファイル名 decombine`
+- テキストファイルからExcelに `cscript vbac ファイル名 combine`
 
 
 ## コーディング規約
