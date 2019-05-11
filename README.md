@@ -1,26 +1,24 @@
 # 概要
 
+netkeiba.com](https://race.netkeiba.com)から今週のレース予想を取得して、エクセルに出力します。
+
 ## 動作環境(検証済)
 - Windows10 Professional
 - Microsoft Excel 2010
 - O365 SMTPサービス
 
-## 機能概要
-[netkeiba.com](https://race.netkeiba.com)から今週のレース予想を取得して、エクセルに出力します。
-
-### 動作
+## 動作方法(手動)
   
 1. /bin/netkeiba.xlsm を起動します。
 1. 標準モジュールの`controller.main()`メソッドを実行します。
 1. 下記のようにディレクトリが作成されます。  
 
-  
 †1出力フォルダ  
 L__ Excelブック(ファイル名:†2直近のレース日、シート名:レース番号)  
 L__ Excelブック(ファイル名:直近のレース日、シート名:レース番号)  
 L__ ••• 
     
-†1:規定値はDesktop/{取得日}
+†1:規定値はDesktop/{取得日}  
 †2:注目のレース日を起点とした、前後2日のレース日  
 
 例  
