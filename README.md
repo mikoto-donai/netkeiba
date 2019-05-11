@@ -1,6 +1,6 @@
 # 概要
 
-netkeiba.com](https://race.netkeiba.com)から今週のレース予想を取得して、エクセルに出力します。
+[netkeiba.com](https://race.netkeiba.com)から今週のレース予想を取得して、エクセルに出力します。
 
 ## 動作環境(検証済)
 - Windows10 Professional
