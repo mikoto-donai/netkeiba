@@ -39,7 +39,7 @@ http://race.netkeiba.com/?pid=yoso&id=c{year}{venue}{times}{event_date}{race_num
 - ファイル名: {year}{venue}{times}{event_date}
 - シート名: {race}
 
-## メール送信
+### 結果の送信
 - O365 SMTPサービスを利用します。  
   - アカウント: keiba.keiba@outlook.com  
   
