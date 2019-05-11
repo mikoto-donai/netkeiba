@@ -8,9 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Private url_ As String
-Private target_sheet_ As Object
+Private url_ As String       '取得対象のURL
+Private target_sheet_ As Object      '取得データの展開先
 Private items_ As Variant    'リモートから取得してセルに展開した内容
+
 Private Sub Class_Initialize()
     Me.targetSheet = ThisWorkbook.Sheets("fetched_data")
     Me.url = "https://race.netkeiba.com"
@@ -61,23 +62,8 @@ Public Function fetchItems(Optional ByVal web_selection_type As String = xlEntir
 
 End Function
 
-Function exporReportAsHTML()
+Private Sub Class_Terminate()
 
-    With ActiveWorkbook.PublishObjects.Add(xlSourceSheet, ActiveWorkbook.path & "\results.html", "Sheet1", "", xlHtmlStatic, "image")
-        .Publish (True)
-        .AutoRepublish = False
-    End With
+target_sheet_.Cells.Clear
 
-End Function
-
-Function exportReportAsPDF()
-
-    With Sheets("Sheet1").PageSetup
-       .Orientation = xlLandscape
-       .TopMargin = 0
-       .LeftMargin = 0
-    End With
-     
-    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, fileName:=ActiveWorkbook.path & "\results.pdf"
-
-End Function
+End Sub

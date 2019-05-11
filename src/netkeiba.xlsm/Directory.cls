@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private output_path_ As String
-Private folder_name_ As String
-Private file_names_() As String     'contents_('ファイル名インデックス', 'シート名インデックス') 　　ex. file_names_(0,0)  ファイル0, シート0の名前
-Private contents_() As Variant    'contents_('ファイル名インデックス', 'シート名インデックス') 　　ex. contents_(0,0)  ファイル0, シート0のRangeオブジェクト
+Private output_path_ As String      '出力先
+Private folder_name_ As String      '作成したファイルを格納するフォルダ名
+Private sheet_names_() As String     'シート名_('ファイル名インデックス', 'シート名インデックス') 　　ex. sheet_names_(0,0) / ファイル名hoge:シート名fuga
+Private contents_() As Variant    'Rangeオブジェクト_('ファイル名インデックス', 'シート名インデックス') 　　ex. contents_(0,0)  / ファイル0, シート0のRangeオブジェクト
 
 Private Sub Class_Initialize()
     Me.outputPath = Environ("HOMEPATH") & "\" & "Desktop"
@@ -27,8 +27,8 @@ Public Property Let folderName(ByVal folder_name As String)
     folder_name_ = folder_name
 End Property
 
-Public Property Let fileNames(ByRef file_names() As String)
-   file_names_() = file_names()
+Public Property Let sheetNames(ByRef sheet_names() As String)
+   sheet_names_() = sheet_names()
 End Property
 
 Public Property Let contents(ByRef contents() As Variant)
@@ -37,10 +37,14 @@ End Property
 
 Public Function createFiles()
 
-    If createFolder() <> 0 Then
+    If createFolder() = -1 Then
+        Err.Raise number:=513, Description:="フォルダの作成に失敗しました"
+        Exit Function
     End If
     
-    If createExcelFiles() <> 0 Then
+    If createExcelFiles() = -1 Then
+        Err.Raise number:=513, Description:="ファイルの作成に失敗しました"
+        Exit Function
     End If
 
 End Function
@@ -67,25 +71,27 @@ Private Function createExcelFiles() As Long
     Dim i As Long
     Dim j As Long
     
-    For i = LBound(file_names_(), 1) To UBound(file_names_(), 1)
-        If file_names_(i, 0) = "" Then
+    For i = LBound(sheet_names_(), 1) To UBound(sheet_names_(), 1)
+        If sheet_names_(i, 0) = "" Then
             createExcelFiles = 1
             Exit Function
         End If
-        file_path = output_path_ & "\" & folder_name_ & "\" & Left(file_names_(i, 0), 7) & ".xlsx"
+        file_path = output_path_ & "\" & folder_name_ & "\" & Left(sheet_names_(i, 0), 7) & ".xlsx"
         
         If Not file_system_object.FileExists(file_path) Then
             Dim file As Object
             Set file = Workbooks.Add
             
-            For j = LBound(file_names_(), 2) To UBound(file_names_(), 2)
+            For j = LBound(sheet_names_(), 2) To UBound(sheet_names_(), 2)
                 If Not IsEmpty(contents_(i, j)) Then
                     ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).Value = contents_(i, j)
-                    ActiveWorkbook.ActiveSheet.Name = Replace(file_names_(i, j), ":", "")
+                    ActiveWorkbook.ActiveSheet.Name = Replace(sheet_names_(i, j), ":", "")
                     ActiveWorkbook.Worksheets.Add after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count)
                 End If
             Next
-
+            
+            ActiveWorkbook.Worksheets(Replace(sheet_names_(i, 0), ":", "")).Activate
+            
             file.SaveAs file_path
             file.Close
             Set file = Nothing

@@ -9,14 +9,14 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Enum RACE_NUMBER
+Public Enum RACE_NUMBER    'レース番号
     FIRST = 1
     LAST = 12
 End Enum
 
-Private prediction_parameters_() As Variant   '各レースの競馬予想URLパラメータ: prediction_parameters_(race_date, race_number)  / ex.  prediction_parameters_(0, 10) : 201905020701
-Private prediction_race_dates_() As String    'pid=yoso&id={prediction_parameter} で得られる競馬予想データ: predictions_targets(race_date, race_number)  /  ex.  predictions_targets(0, 10) : 2回東京7日目:11R
-Private predictions_() As Variant    'pid=yoso&id={prediction_parameter} で得られる競馬予想データ: predictions_(race_date, race_number)  /  ex.  predictions_(0, 10) : 2回東京7日目:11R の予想データRangeオブジェクト
+Private prediction_parameters_() As Variant   '各レースの競馬予想URLパラメータ_(race_date, race_number)   ex.  prediction_parameters_(0, 10) / 201905020701
+Private prediction_race_dates_() As String    'pid=yoso&id={prediction_parameter} で得られる競馬予想データ_(race_date, race_number)    ex.  predictions_race_dates(0, 10) / 2回東京7日目:11R
+Private predictions_() As Variant    'pid=yoso&id={prediction_parameter} で得られる競馬予想データ_(race_date, race_number)    ex.  predictions_(0, 10) / 2回東京7日目:11R の予想データRangeオブジェクト
 
 Public Property Get predictionRaceDates() As String()
     predictionRaceDates = prediction_race_dates_()
@@ -28,10 +28,14 @@ End Property
 
 Public Function analyzeItems(ByRef current_race_dates() As String)
     
-    If createPredictionParameters(current_race_dates()) <> 0 Then
+    If createPredictionParameters(current_race_dates()) = -1 Then
+        Err.Raise number:=513, Description:="各レースの競馬予想URLパラメータの作成に失敗しました"
+        Exit Function
     End If
     
-    If fetchPredictions(current_race_dates()) <> 0 Then
+    If fetchPredictions(current_race_dates()) = -1 Then
+        Err.Raise number:=513, Description:="各レースの競馬予想データの作成に失敗’しました"
+        Exit Function
     End If
 
 End Function
@@ -115,9 +119,6 @@ Private Function fetchPredictions(ByRef current_race_dates() As String) As Long
     Const web_selection_type As String = xlAllTables
     
     For i = LBound(prediction_parameters_, 1) To UBound(prediction_parameters_, 1)
-'    If i = 1 Then
-'        Exit For
-'    End If
         For j = LBound(prediction_parameters_, 2) To UBound(prediction_parameters_, 2)
             
             o_fetcher.url = "https://race.netkeiba.com/?pid=yoso&id=c" & prediction_parameters_(i, j)

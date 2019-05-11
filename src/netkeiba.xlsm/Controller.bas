@@ -2,8 +2,12 @@ Attribute VB_Name = "Controller"
 Option Explicit
 
 Public Static Function main()
+On Error GoTo ErrorHandler
 
     Application.DisplayAlerts = False
+    
+    Dim startTime As Single: Dim endTime As Single
+    startTime = Timer
 
     Dim o_fetcher As New fetcher
     o_fetcher.fetchItems
@@ -18,10 +22,16 @@ Public Static Function main()
     o_prediction.analyzeItems o_race_date.currentRaceDates
     
     Dim o_directory As New directory
-    o_directory.fileNames = o_prediction.predictionRaceDates
+    o_directory.sheetNames = o_prediction.predictionRaceDates
     o_directory.contents = o_prediction.predictions
     o_directory.createFiles
 
     Application.DisplayAlerts = True
-
+    
+    endTime = Timer
+    Debug.Print "直近レースの予想データ出力に成功しました  - 処理時間: " & endTime - startTime & "秒"
+        
+    Exit Function
+ErrorHandler:
+    Debug.Print Err.number & ":" & Err.Description
 End Function

@@ -9,15 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private race_events_() As String     'ex. 04/13(土), 04/14(日), 04/20(土), 04/21(日),
-Private topic_race_event_ As String     'ex. 04/13(土)
-Private race_events_parameters_() As String       'ex. p0420, c0421, n0422,
-Private current_race_events_()  As String   'ex. 04/20(土), 04/21(日),
-Private current_race_event_parameters_() As String       'ex. c0420, c0421,
-
-Private Sub Class_Initialize()
-    
-End Sub
+Private race_events_() As String     '開催日　　ex. 04/13(土), 04/14(日), 04/20(土), 04/21(日),
+Private topic_race_event_ As String     '注目レース開催日　　ex. 04/13(土)
+Private race_events_parameters_() As String       '開催日のURLパラメータ　　ex. p0420, c0421, n0422,
+Private current_race_events_()  As String   '注目レース開催日を起点とした直近の開催日     ex. 04/20(土), 04/21(日),
+Private current_race_event_parameters_() As String       '注目レース開催日を起点とした直近の開催日パラメータ    ex. c0420, c0421,
 
 Public Property Get event_dates() As String()
     event_dates = race_events_()
@@ -31,23 +27,29 @@ Public Property Get current_race_event_parameters() As String()
 End Property
 
 Public Function analyzeItems(ByRef items As Variant)
-On Error GoTo ErrorHandler
     
-    If createRaceEvents(items) <> 0 Then
+    If createRaceEvents(items) = -1 Then
+        Err.Raise number:=513, Description:="開催日の作成に失敗しました"
+        Exit Function
     End If
     
-    If createTopicRaceEvent(items) <> 0 Then
+    If createTopicRaceEvent(items) = -1 Then
+        Err.Raise number:=513, Description:="注目レース開催日の作成に失敗しました"
+        Exit Function
     End If
 
-    If createRaceEventParameters() <> 0 Then
+    If createRaceEventParameters() = -1 Then
+        Err.Raise number:=513, Description:="開催日のURLパラメータの作成に失敗しました"
+        Exit Function
     End If
 
-    If createCurrentRaceEventParameters() <> 0 Then
+    If createCurrentRaceEventParameters() = -1 Then
+        Err.Raise number:=513, Description:="注目レース開催日を起点とした直近の開催日パラメータ作成に失敗しました"
+        Exit Function
     End If
     
-    Exit Function
-ErrorHandler:
-    Debug.Print Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
+    analyzeItems = 0
+
 End Function
 
 Private Function createTopicRaceEvent(ByRef items As Variant) As Long
@@ -61,7 +63,7 @@ Private Function createTopicRaceEvent(ByRef items As Variant) As Long
         End If
     Next
     
-    createTopicRaceEvent = 1
+    createTopicRaceEvent = 0
 
 End Function
 

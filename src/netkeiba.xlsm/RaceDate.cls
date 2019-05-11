@@ -9,25 +9,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private current_race_dates_() As String
-Private event_and_race_dates_() As String    '0420(土)2回東京4日目, 0420(土)3回京都3日目, 0421(日)2回東京5日目, 0421(日)3回京都6日目
-Private Sub Class_Initialize()
-    
-End Sub
+Private current_race_dates_() As String     '注目レース開催日を起点とした直近のレース日　　ex. 2回東京4日目, 3回京都3日目
+
 Public Property Get currentRaceDates() As String()
     currentRaceDates = current_race_dates_()
 End Property
 
 Public Function analyzeItems(ByRef current_race_event_parameters() As String)
-On Error GoTo ErrorHandler
     
-    If createCurrentRaceDates(current_race_event_parameters()) <> 0 Then
+    If createCurrentRaceDates(current_race_event_parameters()) = -1 Then
+        Err.Raise number:=513, Description:="カレントレース日の作成に失敗しました"
+        Exit Function
     End If
-    
-    Exit Function
-ErrorHandler:
-    Debug.Print Err.number & ":" & Err.Description, vbCritical & vbOKOnly, "エラー"
-    analyzeItems = 1
     
 End Function
 
@@ -48,9 +41,11 @@ Private Function createCurrentRaceDates(ByRef current_race_event_parameters() As
         ReDim Preserve current_race_dates_(UBound(current_race_dates_()) - 1)
     End If
     
+    createCurrentRaceDates = 0
+    
 End Function
 
-Private Function createCurrentRaceDate(ByRef items As Variant) As Long
+Private Function createCurrentRaceDate(ByRef items As Variant)
     
     Dim i As Long
     For i = LBound(items, 1) To UBound(items, 1)
@@ -59,8 +54,6 @@ Private Function createCurrentRaceDate(ByRef items As Variant) As Long
             ReDim Preserve current_race_dates_(UBound(current_race_dates_()) + 1)
         End If
     Next
-    
-    createCurrentRaceDate = 0
     
 End Function
 
