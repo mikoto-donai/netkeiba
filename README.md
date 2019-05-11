@@ -1,8 +1,8 @@
 ## 概要
 
-## 環境
+## 動作環境(検証済)
 - Windows10 Professional
-- MS EXCEL VBA
+- Microsoft Excel 2010
 - O365 SMTPサービス
 
 ## 機能概要
@@ -11,7 +11,7 @@
 1. EXCELファイルの作成  
 netkeiba.xlsm を起動してマクロが実行されると、下記のようにディレクトリが作成されます。  
 
-  netkeiba.xlsm
+  netkeiba.xlsm　　
   |  
   フォルダ(フォルダ名: 作成日)  
     |--- Excelブック(ファイル名:開催日、シート名:レース番号)  
