@@ -1,4 +1,4 @@
-## 概要
+# 概要
 
 ## 動作環境(検証済)
 - Windows10 Professional
@@ -47,7 +47,7 @@ http://race.netkeiba.com/?pid=yoso&id=c{year}{venue}{times}{event_date}{race_num
 `powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1`  
 
 
-## コーディング規約
+# コーディング規約
 - 全体
   - プロシージャ(Sub)を使わない
   - メソッド(Function)で統一する
