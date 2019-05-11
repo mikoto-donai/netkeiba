@@ -6,6 +6,8 @@
 - O365 SMTPサービス
 
 ## 機能概要
+[netkeiba.com](https://race.netkeiba.com)から今週のレース予想を取得して、エクセルに出力します。
+
 ### 動作
   
 1. netkeiba.xlsm を起動します。
