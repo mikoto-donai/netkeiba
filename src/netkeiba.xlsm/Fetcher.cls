@@ -8,6 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
 Private url_ As String       '取得対象のURL
 Private target_sheet_ As Object      '取得データの展開先
 Private items_ As Variant    'リモートから取得してセルに展開した内容
@@ -35,7 +36,7 @@ Public Function fetchItems(Optional ByVal web_selection_type As String = xlEntir
     
     With target_sheet_.QueryTables.Add( _
          Connection:="URL;" & url_, _
-         destination:=Range("$A$1"))
+         Destination:=Range("$A$1"))
         .Name = url_
         .FieldNames = True
         .RowNumbers = False
@@ -67,3 +68,5 @@ Private Sub Class_Terminate()
 target_sheet_.Cells.Clear
 
 End Sub
+
+

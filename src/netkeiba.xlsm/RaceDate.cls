@@ -15,10 +15,14 @@ Public Property Get currentRaceDates() As String()
     currentRaceDates = current_race_dates_()
 End Property
 
+Public Function outputLog() As String
+    outputLog = Now & vbTab & "対象レース日を作成しました: " & Join(current_race_dates_(), ",")
+End Function
+
 Public Function analyzeItems(ByRef current_race_event_parameters() As String)
     
     If createCurrentRaceDates(current_race_event_parameters()) = -1 Then
-        Err.Raise number:=513, Description:="カレントレース日の作成に失敗しました"
+        Err.Raise Number:=513, Description:="カレントレース日の作成に失敗しました"
         Exit Function
     End If
     
@@ -27,7 +31,7 @@ End Function
 Private Function createCurrentRaceDates(ByRef current_race_event_parameters() As String) As Long
     
     ReDim current_race_dates_(0)
-    Dim o_fetcher As New fetcher
+    Dim o_fetcher As New Fetcher
     Dim i As Integer
     
     For i = LBound(current_race_event_parameters()) To UBound(current_race_event_parameters())
@@ -56,4 +60,5 @@ Private Function createCurrentRaceDate(ByRef items As Variant)
     Next
     
 End Function
+
 

@@ -29,22 +29,22 @@ End Property
 Public Function analyzeItems(ByRef items As Variant)
     
     If createRaceEvents(items) = -1 Then
-        Err.Raise number:=513, Description:="開催日の作成に失敗しました"
+        Err.Raise Number:=513, Description:="開催日の作成に失敗しました"
         Exit Function
     End If
     
     If createTopicRaceEvent(items) = -1 Then
-        Err.Raise number:=513, Description:="注目レース開催日の作成に失敗しました"
+        Err.Raise Number:=513, Description:="注目レース開催日の作成に失敗しました"
         Exit Function
     End If
 
     If createRaceEventParameters() = -1 Then
-        Err.Raise number:=513, Description:="開催日のURLパラメータの作成に失敗しました"
+        Err.Raise Number:=513, Description:="開催日のURLパラメータの作成に失敗しました"
         Exit Function
     End If
 
     If createCurrentRaceEventParameters() = -1 Then
-        Err.Raise number:=513, Description:="注目レース開催日を起点とした直近の開催日パラメータ作成に失敗しました"
+        Err.Raise Number:=513, Description:="注目レース開催日を起点とした直近の開催日パラメータ作成に失敗しました"
         Exit Function
     End If
     
@@ -155,3 +155,5 @@ Private Function createCurrentRaceEventParameters() As Long
     createCurrentRaceEventParameters = 0
     
 End Function
+
+

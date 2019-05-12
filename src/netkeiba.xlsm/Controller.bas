@@ -4,34 +4,31 @@ Option Explicit
 Public Static Function main()
 On Error GoTo ErrorHandler
 
-    Application.DisplayAlerts = False
-    
-    Dim startTime As Single: Dim endTime As Single
-    startTime = Timer
+    Dim o_configuration As New Configuration
 
-    Dim o_fetcher As New fetcher
+    Dim o_fetcher As New Fetcher
     o_fetcher.fetchItems
 
-    Dim o_race_event As New raceEvent
+    Dim o_race_event As New RaceEvent
     o_race_event.analyzeItems o_fetcher.items
 
     Dim o_race_date As New RaceDate
     o_race_date.analyzeItems o_race_event.current_race_event_parameters
+    o_configuration.logContet = o_race_date.outputLog
 
     Dim o_prediction As New Prediction
     o_prediction.analyzeItems o_race_date.currentRaceDates
     
-    Dim o_directory As New directory
+    Dim o_directory As New Directory
     o_directory.sheetNames = o_prediction.predictionRaceDates
     o_directory.contents = o_prediction.predictions
     o_directory.createFiles
-
-    Application.DisplayAlerts = True
     
-    endTime = Timer
-    Debug.Print "直近レースの予想データ出力に成功しました  - 処理時間: " & endTime - startTime & "秒"
-        
-    Exit Function
+    o_configuration.finalize
+    
+    End
 ErrorHandler:
-    Debug.Print Err.number & ":" & Err.Description
+    o_configuration.logContet = Now & vbTab & "作業を中断しました" & vbTab & Err.Number & ":" & Err.Description
+    o_configuration.finalize
 End Function
+

@@ -1,1 +1,0 @@
-powershell -NoProfile -ExecutionPolicy Unrestricted .\sendMailByO365.ps1

@@ -29,12 +29,12 @@ End Property
 Public Function analyzeItems(ByRef current_race_dates() As String)
     
     If createPredictionParameters(current_race_dates()) = -1 Then
-        Err.Raise number:=513, Description:="各レースの競馬予想URLパラメータの作成に失敗しました"
+        Err.Raise Number:=513, Description:="各レースの競馬予想URLパラメータの作成に失敗しました"
         Exit Function
     End If
     
     If fetchPredictions(current_race_dates()) = -1 Then
-        Err.Raise number:=513, Description:="各レースの競馬予想データの作成に失敗’しました"
+        Err.Raise Number:=513, Description:="各レースの競馬予想データの作成に失敗’しました"
         Exit Function
     End If
 
@@ -98,7 +98,7 @@ Private Function convertRaceDateIntoParameters(ByVal current_race_date As String
             venue = "10"
             event_date = Replace(Right(current_race_date, InStr(current_race_date, "小倉")), "日目", "")
         Case Else
-            Err.Raise number:=513, Description:="レース情報の変換でエラーが発生しました"
+            Err.Raise Number:=513, Description:="レース情報の変換でエラーが発生しました"
     End Select
     
     Dim formatted_event_date As String
@@ -115,7 +115,7 @@ Private Function fetchPredictions(ByRef current_race_dates() As String) As Long
 
     Dim i As Integer
     Dim j As Integer
-    Dim o_fetcher As New fetcher
+    Dim o_fetcher As New Fetcher
     Const web_selection_type As String = xlAllTables
     
     For i = LBound(prediction_parameters_, 1) To UBound(prediction_parameters_, 1)
@@ -137,6 +137,7 @@ Private Function fetchPredictions(ByRef current_race_dates() As String) As Long
     fetchPredictions = 0
     
 End Function
+
 
 
 

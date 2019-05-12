@@ -38,12 +38,12 @@ End Property
 Public Function createFiles()
 
     If createFolder() = -1 Then
-        Err.Raise number:=513, Description:="フォルダの作成に失敗しました"
+        Err.Raise Number:=513, Description:="フォルダの作成に失敗しました"
         Exit Function
     End If
     
     If createExcelFiles() = -1 Then
-        Err.Raise number:=513, Description:="ファイルの作成に失敗しました"
+        Err.Raise Number:=513, Description:="ファイルの作成に失敗しました"
         Exit Function
     End If
 
@@ -65,40 +65,46 @@ Private Function createExcelFiles() As Long
     
     Dim file_system_object As Object
     Set file_system_object = CreateObject("Scripting.FileSystemObject")
-
-    Dim file_path As String
     Application.SheetsInNewWorkbook = 1
+    
+    Dim file_path As String
+    Dim file_name As String
     Dim i As Long
     Dim j As Long
-    
     For i = LBound(sheet_names_(), 1) To UBound(sheet_names_(), 1)
         If sheet_names_(i, 0) = "" Then
             createExcelFiles = 1
             Exit Function
         End If
-        file_path = output_path_ & "\" & folder_name_ & "\" & Left(sheet_names_(i, 0), 7) & ".xlsx"
         
-        If Not file_system_object.FileExists(file_path) Then
-            Dim file As Object
-            Set file = Workbooks.Add
-            
-            For j = LBound(sheet_names_(), 2) To UBound(sheet_names_(), 2)
-                If Not IsEmpty(contents_(i, j)) Then
-                    ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).Value = contents_(i, j)
-                    ActiveWorkbook.ActiveSheet.Name = Replace(sheet_names_(i, j), ":", "")
-                    ActiveWorkbook.Worksheets.Add after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count)
-                End If
-            Next
-            
-            ActiveWorkbook.Worksheets(Replace(sheet_names_(i, 0), ":", "")).Activate
-            
-            file.SaveAs file_path
-            file.Close
-            Set file = Nothing
+        file_name = Left(sheet_names_(i, 0), InStr(sheet_names_(i, 0), ":") - 1) & ".xlsx"
+        file_path = output_path_ & "\" & folder_name_ & "\" & file_name
+        
+        If file_system_object.FileExists(file_path) Then
+            file_system_object.DeleteFile file_path
         End If
+        
+        Dim file As Object
+        Set file = Workbooks.Add
+        
+        For j = LBound(sheet_names_(), 2) To UBound(sheet_names_(), 2)
+            If Not IsEmpty(contents_(i, j)) Then
+                ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).Value = contents_(i, j)
+                ActiveWorkbook.ActiveSheet.Name = Replace(sheet_names_(i, j), ":", "")
+                ActiveWorkbook.Worksheets.Add after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count)
+            End If
+        Next
+        
+        ActiveWorkbook.Worksheets(Replace(sheet_names_(i, 0), ":", "")).Activate
+        
+        file.SaveAs file_path
+        file.Close
+        Set file = Nothing
+
     Next
 
     createExcelFiles = 0
     
 End Function
+
 
