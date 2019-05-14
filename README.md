@@ -6,7 +6,6 @@
 下記環境にて動作確認済みです。
 - Windows10 Professional
 - Microsoft Excel 2010
-- O365 SMTPサービス
 
 ## 手動実行
 ### Excel VBAエディタから直接実行  
