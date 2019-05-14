@@ -38,7 +38,7 @@ L__ 1回新潟6日目.xlsx
 
 # 管理方法
 ## ソース管理
-[vbac](https://github.com/vbaidiot/Ariawase)を利用して、テキストファイルの状態でGitで管理する
+[vbac](https://github.com/vbaidiot/Ariawase)を利用して、テキストファイルの状態でGitで管理します。
 - Excelからテキストファイルに `cscript /vbac.wsf decombine`
 - テキストファイルからExcelに `cscript /vbac.wsf combine`
 
