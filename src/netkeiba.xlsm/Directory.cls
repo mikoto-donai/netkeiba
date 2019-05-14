@@ -95,7 +95,7 @@ Private Function createExcelFiles() As Long
             End If
         Next
         
-        ActiveWorkbook.Worksheets(Replace(sheet_names_(i, 0), ":", "")).Activate
+        ActiveWorkbook.Worksheets(1).Activate
         
         file.SaveAs file_path
         file.Close
