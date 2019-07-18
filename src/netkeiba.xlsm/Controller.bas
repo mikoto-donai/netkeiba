@@ -3,32 +3,30 @@ Option Explicit
 
 Public Static Function main()
 On Error GoTo ErrorHandler
-
-    Dim o_configuration As New Configuration
-
+    
+    StaticModule.initialize
+    
+    Dim race_year As Long: race_year = 2018
+    Dim race_place As Long: race_place = 9
+    
     Dim o_fetcher As New Fetcher
+    Dim o_past_race As New PastRace
+
+    o_fetcher.url = "https://keiba.yahoo.co.jp/schedule/list/" & CStr(race_year) & "/?" & "place=" & CStr(race_place)
     o_fetcher.fetchItems
 
-    Dim o_race_event As New RaceEvent
-    o_race_event.analyzeItems o_fetcher.items
-
-    Dim o_race_date As New RaceDate
-    o_race_date.analyzeItems o_race_event.current_race_event_parameters
-    o_configuration.logContet = o_race_date.outputLog
-
-    Dim o_prediction As New Prediction
-    o_prediction.analyzeItems o_race_date.currentRaceDates
-    
+    o_past_race.analyzeItems race_year, o_fetcher.items
+ 
     Dim o_directory As New Directory
-    o_directory.sheetNames = o_prediction.predictionRaceDates
-    o_directory.contents = o_prediction.predictions
+    o_directory.fileNames = o_past_race.fileNames
+    o_directory.contents = o_past_race.raceResults
     o_directory.createFiles
     
-    o_configuration.finalize
+    StaticModule.finalize
     
     End
 ErrorHandler:
-    o_configuration.logContet = Now & vbTab & "çÏã∆ÇíÜífÇµÇ‹ÇµÇΩ" & vbTab & Err.Number & ":" & Err.Description
-    o_configuration.finalize
+    StaticModule.logContent Now & vbTab & "çÏã∆ÇíÜífÇµÇ‹ÇµÇΩ" & vbTab & Err.Number & ":" & Err.Description
+    StaticModule.finalize
 End Function
 
