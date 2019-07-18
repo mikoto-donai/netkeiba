@@ -11,7 +11,7 @@ Option Explicit
 
 Private output_path_ As String      '出力先
 Private folder_name_ As String      '作成したファイルを格納するフォルダ名
-Private sheet_names_() As String     'シート名_('ファイル名インデックス', 'シート名インデックス') 　　ex. sheet_names_(0,0) / ファイル名hoge:シート名fuga
+Private file_names_() As String     'シート名_('ファイル名インデックス', 'シート名インデックス') 　　ex. file_names_(0,0) / ファイル名hoge:シート名fuga
 Private contents_() As Variant    'Rangeオブジェクト_('ファイル名インデックス', 'シート名インデックス') 　　ex. contents_(0,0)  / ファイル0, シート0のRangeオブジェクト
 
 Private Sub Class_Initialize()
@@ -27,8 +27,8 @@ Public Property Let folderName(ByVal folder_name As String)
     folder_name_ = folder_name
 End Property
 
-Public Property Let sheetNames(ByRef sheet_names() As String)
-   sheet_names_() = sheet_names()
+Public Property Let fileNames(ByRef file_names() As String)
+   file_names_() = file_names()
 End Property
 
 Public Property Let contents(ByRef contents() As Variant)
@@ -71,13 +71,13 @@ Private Function createExcelFiles() As Long
     Dim file_name As String
     Dim i As Long
     Dim j As Long
-    For i = LBound(sheet_names_(), 1) To UBound(sheet_names_(), 1)
-        If sheet_names_(i, 0) = "" Then
+    For i = LBound(file_names_(), 1) To UBound(file_names_(), 1)
+        If file_names_(i, 0) = "" Then
             createExcelFiles = 1
             Exit Function
         End If
         
-        file_name = Left(sheet_names_(i, 0), InStr(sheet_names_(i, 0), ":") - 1) & ".xlsx"
+        file_name = Left(file_names_(i, 0), InStr(file_names_(i, 0), ":") - 1) & ".xlsx"
         file_path = output_path_ & "\" & folder_name_ & "\" & file_name
         
         If file_system_object.FileExists(file_path) Then
@@ -87,10 +87,10 @@ Private Function createExcelFiles() As Long
         Dim file As Object
         Set file = Workbooks.Add
         
-        For j = LBound(sheet_names_(), 2) To UBound(sheet_names_(), 2)
+        For j = LBound(file_names_(), 2) To UBound(file_names_(), 2)
             If Not IsEmpty(contents_(i, j)) Then
                 ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).Value = contents_(i, j)
-                ActiveWorkbook.ActiveSheet.Name = Replace(sheet_names_(i, j), ":", "")
+                ActiveWorkbook.ActiveSheet.Name = Replace(file_names_(i, j), ":", "")
                 ActiveWorkbook.Worksheets.Add after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count)
             End If
         Next

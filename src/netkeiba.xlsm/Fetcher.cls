@@ -14,14 +14,13 @@ Private target_sheet_ As Object      '取得データの展開先
 Private items_ As Variant    'リモートから取得してセルに展開した内容
 
 Private Sub Class_Initialize()
-    Me.targetSheet = ThisWorkbook.Sheets("fetched_data")
-    Me.url = "https://race.netkeiba.com"
+    Set target_sheet_ = ThisWorkbook.Sheets("fetched_data")
 End Sub
 
 Public Property Let url(ByVal url As String)
     url_ = url
 End Property
-
+    
 Public Property Let targetSheet(ByRef target_sheet As Object)
     Set target_sheet_ = target_sheet
 End Property
@@ -30,13 +29,18 @@ Public Property Get items() As Variant
     items = items_
 End Property
 
-Public Function fetchItems(Optional ByVal web_selection_type As String = xlEntirePage)
+Public Function fetchItems(Optional ByVal WEB_TABLE)
     
+    target_sheet_.Activate
     target_sheet_.Cells.Clear
     
-    With target_sheet_.QueryTables.Add( _
+    Dim query_table As Object
+    
+    Set query_table = target_sheet_.QueryTables.Add( _
          Connection:="URL;" & url_, _
          Destination:=Range("$A$1"))
+    
+    With query_table
         .Name = url_
         .FieldNames = True
         .RowNumbers = False
@@ -49,13 +53,21 @@ Public Function fetchItems(Optional ByVal web_selection_type As String = xlEntir
         .SaveData = False
         .AdjustColumnWidth = True
         .RefreshPeriod = 0
-        .WebSelectionType = web_selection_type
         .WebFormatting = xlWebFormattingNone
         .WebPreFormattedTextToColumns = True
         .WebConsecutiveDelimitersAsOne = True
         .WebSingleBlockTextImport = False
         .WebDisableDateRecognition = False
         .WebDisableRedirections = False
+    End With
+    
+    With query_table
+        If IsMissing(WEB_TABLE) Then
+            .WebSelectionType = xlAllTables
+        Else
+            .WebSelectionType = xlSpecifiedTables
+            .WebTables = WEB_TABLE
+        End If
         .Refresh BackgroundQuery:=False
     End With
     
@@ -64,9 +76,5 @@ Public Function fetchItems(Optional ByVal web_selection_type As String = xlEntir
 End Function
 
 Private Sub Class_Terminate()
-
-target_sheet_.Cells.Clear
-
+    target_sheet_.Cells.Clear
 End Sub
-
-
