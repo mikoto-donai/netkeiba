@@ -9,10 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Enum RACE_NUMBER   'レース番号
+    FIRST = 1
+    LAST = 12
+End Enum
 Private race_dates_() As String  'レース日  ex. race_date(0) / 2回東京7日目
 Private race_parameters_() As String   '各レースのURLパラメータ  ex.  race_parameters_(0) / 2019050207
 Private file_names_() As String  'セル値格納先のファイル名 ex. file_names(0,1) / 2回東京7日目:2R
 Private race_results_() As Variant    'セル値  ex.  race_results_(0, 1) / 2回東京7日目:2R のセル値
+
+Private Sub Class_Initialize()
+    ReDim race_years_(0)
+    ReDim race_places_(0)
+End Sub
 
 Public Property Get fileNames() As String()
     fileNames = file_names_()

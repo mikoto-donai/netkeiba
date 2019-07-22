@@ -11,7 +11,7 @@ Option Explicit
 
 Private url_ As String       '取得対象のURL
 Private target_sheet_ As Object      '取得データの展開先
-Private items_ As Variant    'リモートから取得してセルに展開した内容
+Private items_ As Variant    'リモートから取得して展開したセル値
 
 Private Sub Class_Initialize()
     Set target_sheet_ = ThisWorkbook.Sheets("fetched_data")

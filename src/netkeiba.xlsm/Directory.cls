@@ -16,7 +16,6 @@ Private contents_() As Variant    'Rangeオブジェクト_('ファイル名インデックス', 
 
 Private Sub Class_Initialize()
     Me.outputPath = Environ("HOMEPATH") & "\" & "Desktop"
-    Me.folderName = Format(Date, "yyyymmdd")
 End Sub
 
 Public Property Let outputPath(ByVal output_path As String)
@@ -89,7 +88,7 @@ Private Function createExcelFiles() As Long
         
         For j = LBound(file_names_(), 2) To UBound(file_names_(), 2)
             If Not IsEmpty(contents_(i, j)) Then
-                ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).Value = contents_(i, j)
+                ActiveWorkbook.ActiveSheet.Cells(1, 1).Resize(UBound(contents_(i, j), 1), UBound(contents_(i, j), 2)).value = contents_(i, j)
                 ActiveWorkbook.ActiveSheet.Name = Replace(file_names_(i, j), ":", "")
                 ActiveWorkbook.Worksheets.Add after:=ActiveWorkbook.Worksheets(ActiveWorkbook.Worksheets.Count)
             End If
