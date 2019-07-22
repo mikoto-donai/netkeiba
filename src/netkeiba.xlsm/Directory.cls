@@ -70,6 +70,7 @@ Private Function createExcelFiles() As Long
     Dim file_name As String
     Dim i As Long
     Dim j As Long
+    
     For i = LBound(file_names_(), 1) To UBound(file_names_(), 1)
         If file_names_(i, 0) = "" Then
             createExcelFiles = 1
@@ -99,7 +100,7 @@ Private Function createExcelFiles() As Long
         file.SaveAs file_path
         file.Close
         Set file = Nothing
-
+        
     Next
 
     createExcelFiles = 0
