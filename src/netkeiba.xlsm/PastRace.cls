@@ -153,13 +153,15 @@ Private Function fetchRaceResults() As Long
             If Not IsEmpty(o_fetcher.items) Then
                 file_names_(i, j) = race_dates_(i) & ":" & j + 1 & "R"
                 race_results_(i, j) = o_fetcher.items
-                StaticModule.logContent file_names_(i, j) & "‚ğæ“¾Ï"
             End If
             
         Next
-            If i = 1 Then
-                Exit For
-            End If
+        StaticModule.writeLog race_dates_(i) & "‚ğæ“¾‚µ‚Ü‚µ‚½"
+        
+        If i = 1 Then
+            Exit For
+        End If
+            
     Next
     
     fetchRaceResults = 0
