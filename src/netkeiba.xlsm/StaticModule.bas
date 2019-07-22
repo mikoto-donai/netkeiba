@@ -1,12 +1,4 @@
-VERSION 1.0 CLASS
-BEGIN
-  MultiUse = -1  'True
-END
-Attribute VB_Name = "Configuration"
-Attribute VB_GlobalNameSpace = False
-Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Name = "StaticModule"
 Option Explicit
 
 Private start_time_ As Single   'マクロ開始時間
@@ -14,7 +6,7 @@ Private end_time_ As Single     'マクロ終了時間
 Private log_path_ As String     'ログ出力先のフルパス
 Private log_contents_() As String   '出力するログの中身
 
-Private Sub Class_Initialize()
+Public Static Function initialize()
 
     Application.DisplayAlerts = False
     start_time_ = Timer
@@ -22,16 +14,16 @@ Private Sub Class_Initialize()
     ReDim log_contents_(0)
     log_contents_(0) = Now & vbTab & "処理を開始しました"
     
-End Sub
+End Function
 
-Public Property Let logContet(ByVal log_content As String)
+Public Static Function logContent(ByVal log_content As String)
     
     ReDim Preserve log_contents_(UBound(log_contents_) + 1)
     log_contents_(UBound(log_contents_)) = log_content
     
-End Property
+End Function
 
-Public Function finalize()
+Public Static Function finalize()
 
     end_time_ = Timer
     
@@ -54,6 +46,3 @@ Public Function finalize()
     Application.DisplayAlerts = True
 
 End Function
-
-
-
