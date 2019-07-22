@@ -25,7 +25,7 @@ L__ •••
 <sup>†1</sup>規定値はDesktop/{対象年_場所}  
 
 例  
-Desktop/2018_札幌
+Desktop/2018_札幌  
 L__ 1回新潟5日目.xlsx  
 L__ 1回新潟6日目.xlsx  
 
