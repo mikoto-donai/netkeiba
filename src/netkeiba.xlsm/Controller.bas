@@ -3,30 +3,49 @@ Option Explicit
 
 Public Static Function main()
 On Error GoTo ErrorHandler
-    
+
     StaticModule.initialize
     
-    Dim race_year As Long: race_year = 2018
-    Dim race_place As Long: race_place = 9
+    Dim race_year As Long
+    race_year = 2018
     
-    Dim o_fetcher As New Fetcher
+    Dim race_places As Object: Set race_places = CreateObject("Scripting.Dictionary")
+    With race_places
+        .Add "01", "éDñy"
+'        .Add "02", "îüäŸ"
+'        .Add "03", "ïüìá"
+'        .Add "04", "êVäÉ"
+'        .Add "05", "ìåãû"
+'        .Add "06", "íÜéR"
+'        .Add "07", "íÜãû"
+'        .Add "08", "ãûìs"
+'        .Add "09", "ç„ê_"
+'        .Add "10", "è¨ëq"
+    End With
+    
+    Dim race_master_url As String
     Dim o_past_race As New PastRace
-
-    o_fetcher.url = "https://keiba.yahoo.co.jp/schedule/list/" & CStr(race_year) & "/?" & "place=" & CStr(race_place)
-    o_fetcher.fetchItems
-
-    o_past_race.analyzeItems race_year, o_fetcher.items
- 
+    Dim o_fetcher As New Fetcher
     Dim o_directory As New Directory
-    o_directory.fileNames = o_past_race.fileNames
-    o_directory.contents = o_past_race.raceResults
-    o_directory.createFiles
     
+    Dim key As Variant
+    For Each key In race_places
+        race_master_url = "https://keiba.yahoo.co.jp/schedule/list/" & CStr(race_year) & "/?" & "place=" & key
+        o_fetcher.url = race_master_url
+        o_fetcher.fetchItems
+        
+        o_past_race.analyzeItems race_year, o_fetcher.items
+        
+        o_directory.folderName = race_year & "_" & race_places.Item(key)
+        o_directory.fileNames = o_past_race.fileNames
+        o_directory.contents = o_past_race.raceResults
+        o_directory.createFiles
+    Next
+
     StaticModule.finalize
-    
+
     End
 ErrorHandler:
     StaticModule.logContent Now & vbTab & "çÏã∆ÇíÜífÇµÇ‹ÇµÇΩ" & vbTab & Err.Number & ":" & Err.Description
     StaticModule.finalize
 End Function
-

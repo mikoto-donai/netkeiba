@@ -1,11 +1,6 @@
 Attribute VB_Name = "StaticModule"
 Option Explicit
 
-Public Enum RACE_NUMBER    'レース番号
-    FIRST = 1
-    LAST = 12
-End Enum
-
 Private start_time_ As Single   'マクロ開始時間
 Private end_time_ As Single     'マクロ終了時間
 Private log_path_ As String     'ログ出力先のフルパス
@@ -51,8 +46,3 @@ Public Static Function finalize()
     Application.DisplayAlerts = True
 
 End Function
-
-
-
-
-
