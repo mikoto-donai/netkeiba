@@ -13,14 +13,14 @@ On Error GoTo ErrorHandler
     With race_places  '取得対象外の場所をコメントアウトしてください
         .Add "01", "札幌"
         .Add "02", "函館"
-'        .Add "03", "福島"
-'        .Add "04", "新潟"
-'        .Add "05", "東京"
-'        .Add "06", "中山"
-'        .Add "07", "中京"
-'        .Add "08", "京都"
-'        .Add "09", "阪神"
-'        .Add "10", "小倉"
+        .Add "03", "福島"
+        .Add "04", "新潟"
+        .Add "05", "東京"
+        .Add "06", "中山"
+        .Add "07", "中京"
+        .Add "08", "京都"
+        .Add "09", "阪神"
+        .Add "10", "小倉"
     End With
     
     Dim race_master_url As String
@@ -46,6 +46,6 @@ On Error GoTo ErrorHandler
 
     End
 ErrorHandler:
-    StaticModule.writeLog Now & vbTab & "作業を中断しました" & vbTab & Err.Number & ":" & Err.Description
+    StaticModule.writeLog "作業を中断しました" & vbTab & Err.Number & ":" & Err.Description
     StaticModule.finalize
 End Function
