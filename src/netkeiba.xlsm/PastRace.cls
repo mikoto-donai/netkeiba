@@ -163,7 +163,7 @@ Private Function fetchRaceResults() As Long
             End If
             
         Next
-        StaticModule.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
+        Logger.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
 
 '        If i = 1 Then
 '            Exit For

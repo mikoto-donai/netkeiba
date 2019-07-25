@@ -3,24 +3,27 @@ Option Explicit
 
 Public Static Function main()
 On Error GoTo ErrorHandler
-
-    StaticModule.initialize
+    
+    Application.DisplayAlerts = False
+    ThisWorkbook.Sheets("Sheet1").Name = "fetched_data"
+    
+    Logger.initialize
     
     Dim race_year As Long
-    race_year = 2018  '取得対象年を入力して下さい
+    race_year = 2018  '取得対象年を設定して下さい
     
     Dim race_places As Object: Set race_places = CreateObject("Scripting.Dictionary")
-    With race_places  '取得対象外の場所をコメントアウトしてください
-        .Add "01", "札幌"
-        .Add "02", "函館"
-        .Add "03", "福島"
-        .Add "04", "新潟"
+    With race_places  '取得対象外の開催場所をコメントアウトしてください
+'        .Add "01", "札幌"
+'        .Add "02", "函館"
+'        .Add "03", "福島"
+'        .Add "04", "新潟"
         .Add "05", "東京"
-        .Add "06", "中山"
-        .Add "07", "中京"
-        .Add "08", "京都"
-        .Add "09", "阪神"
-        .Add "10", "小倉"
+'        .Add "06", "中山"
+'        .Add "07", "中京"
+'        .Add "08", "京都"
+'        .Add "09", "阪神"
+'        .Add "10", "小倉"
     End With
     
     Dim race_master_url As String
@@ -42,10 +45,12 @@ On Error GoTo ErrorHandler
         o_directory.createFiles
     Next
 
-    StaticModule.finalize
+    Logger.finalize
+    Application.DisplayAlerts = True
 
     End
 ErrorHandler:
-    StaticModule.writeLog "作業を中断しました" & vbTab & Err.Number & ":" & Err.Description
-    StaticModule.finalize
+    Logger.writeLog "作業を中断しました" & vbTab & Err.Number & ":" & Err.Description
+    Logger.finalize
+    Application.DisplayAlerts = True
 End Function
