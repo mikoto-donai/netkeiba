@@ -24,7 +24,7 @@ Public Static Function initialize()
 End Function
 
 Public Static Function writeLog(ByVal log_content As String)
-    Logger.WriteLine Now & vbTab & log_content
+    log.writeLine Now & vbTab & log_content
 End Function
 
 Public Static Function finalize()

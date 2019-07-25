@@ -143,6 +143,9 @@ Private Function fetchRaceResults() As Long
     Const INSPECTION_CELL_VALUE = "”n–¼"
 
     Dim o_fetcher As New Fetcher
+    Const targetSheetName = "fetched_data"
+    o_fetcher.configureTargetSheet targetSheetName
+    
     Dim i As Integer
     Dim j As Integer
     
@@ -150,7 +153,6 @@ Private Function fetchRaceResults() As Long
         For j = RACE_NUMBER.FIRST - 1 To RACE_NUMBER.LAST - 1
             
             o_fetcher.url = "https://db.netkeiba.com/race/" & race_parameters_(i) & Format(j + 1, "00")
-            o_fetcher.targetSheet = ThisWorkbook.Sheets("fetched_data")
             o_fetcher.fetchItems 1
 
 '            If IsEmpty(o_fetcher.items) Then
@@ -165,9 +167,9 @@ Private Function fetchRaceResults() As Long
         Next
         Logger.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
 
-'        If i = 1 Then
-'            Exit For
-'        End If
+        If i = 1 Then
+            Exit For
+        End If
             
     Next
     

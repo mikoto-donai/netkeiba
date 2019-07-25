@@ -13,22 +13,32 @@ Private url_ As String       '取得対象のURL
 Private target_sheet_ As Object      '取得データの展開先
 Private items_ As Variant    'リモートから取得して展開したセル値
 
-Private Sub Class_Initialize()
-    Set target_sheet_ = ThisWorkbook.Sheets("fetched_data")
-End Sub
-
 Public Property Let url(ByVal url As String)
     url_ = url
-End Property
-    
-Public Property Let targetSheet(ByRef target_sheet As Object)
-    Set target_sheet_ = target_sheet
 End Property
 
 Public Property Get items() As Variant
     items = items_
 End Property
 
+Public Function configureTargetSheet(ByVal targetSheetName As String)
+
+    Dim isRenamed As Boolean: isRenamed = False
+    Dim sheet As Worksheet
+    For Each sheet In ThisWorkbook.Worksheets
+        If sheet.Name = targetSheetName Then
+            isRenamed = True
+            Exit For
+        End If
+    Next
+    If Not isRenamed Then
+        ThisWorkbook.Sheets(1).Name = targetSheetName
+    End If
+    
+    Set target_sheet_ = ThisWorkbook.Sheets(targetSheetName)
+
+End Function
+ 
 Public Function fetchItems(Optional ByVal WEB_TABLE)
     
     target_sheet_.Activate
