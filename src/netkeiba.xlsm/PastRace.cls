@@ -137,28 +137,34 @@ Private Function fetchRaceResults() As Long
 
     ReDim race_results_(UBound(race_parameters_()), RACE_NUMBER.LAST - 1)
     ReDim file_names_(UBound(race_parameters_()), RACE_NUMBER.LAST - 1)
+
+    Const INSPECTION_CELL_ROW = 1
+    Const INSPECTION_CELL_COLUMN = 1
+    Const INSPECTION_CELL_VALUE = "’…"
+
+    Dim o_fetcher As New Fetcher
+    Const targetSheetName = "fetched_data"
+    o_fetcher.configureTargetSheet targetSheetName
     
     Dim i As Integer
     Dim j As Integer
-    
-    Dim o_fetcher As New Fetcher
+    Dim v As Variant
     
     For i = LBound(race_parameters_()) To UBound(race_parameters_())
         For j = RACE_NUMBER.FIRST - 1 To RACE_NUMBER.LAST - 1
-            
+
             o_fetcher.url = "https://db.netkeiba.com/race/" & race_parameters_(i) & Format(j + 1, "00")
-            o_fetcher.targetSheet = ThisWorkbook.Sheets("fetched_data")
             o_fetcher.fetchItems 1
-            
-            If Not IsEmpty(o_fetcher.items) Then
+
+            If o_fetcher.items(INSPECTION_CELL_ROW, INSPECTION_CELL_COLUMN) = INSPECTION_CELL_VALUE Then
                 file_names_(i, j) = race_dates_(i) & ":" & j + 1 & "R"
                 race_results_(i, j) = o_fetcher.items
             End If
             
         Next
-        StaticModule.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
-        
-        If i = 1 Then
+        Logger.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
+
+        If i = 3 Then
             Exit For
         End If
             

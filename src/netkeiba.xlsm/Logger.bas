@@ -1,4 +1,4 @@
-Attribute VB_Name = "StaticModule"
+Attribute VB_Name = "Logger"
 Option Explicit
 
 Private start_time_ As Single   'マクロ開始時間
@@ -7,8 +7,7 @@ Private log_path_ As String     'ログ出力先のフルパス
 Private log As Object  'ログオブジェクト
 
 Public Static Function initialize()
-
-    Application.DisplayAlerts = False
+    
     start_time_ = Timer
     
     Dim file_system As Object
@@ -20,19 +19,17 @@ Public Static Function initialize()
     End If
 
     Set log = file_system.OpenTextFile(log_path_, 8)
-    StaticModule.writeLog "処理を開始しました"
+    Logger.writeLog "処理を開始しました"
     
 End Function
 
 Public Static Function writeLog(ByVal log_content As String)
-    log.WriteLine Now & vbTab & log_content
+    log.writeLine Now & vbTab & log_content
 End Function
 
 Public Static Function finalize()
 
     end_time_ = Timer
-
-    StaticModule.writeLog "処理を完了しました - 作業時間: " & end_time_ - start_time_ & "秒" & vbTab
-    Application.DisplayAlerts = True
+    Logger.writeLog "処理を完了しました - 作業時間: " & end_time_ - start_time_ & "秒" & vbTab
 
 End Function
