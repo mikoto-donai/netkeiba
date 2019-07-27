@@ -13,10 +13,10 @@ On Error GoTo ErrorHandler
     Dim race_places As Object: Set race_places = CreateObject("Scripting.Dictionary")
     With race_places  '取得対象外の開催場所をコメントアウトしてください
 '        .Add "01", "札幌"
-        .Add "02", "函館"
+'        .Add "02", "函館"
 '        .Add "03", "福島"
 '        .Add "04", "新潟"
-'        .Add "05", "東京"
+        .Add "05", "東京"
 '        .Add "06", "中山"
 '        .Add "07", "中京"
 '        .Add "08", "京都"

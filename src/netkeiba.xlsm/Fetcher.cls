@@ -81,6 +81,13 @@ Public Function fetchItems(Optional ByVal WEB_TABLE)
         .Refresh BackgroundQuery:=False
     End With
     
+    If VarType(target_sheet_.UsedRange) = vbString Then
+        Dim fakeArray(1, 1) As String
+        fakeArray(1, 1) = target_sheet_.UsedRange
+        items_ = fakeArray
+        Exit Function
+    End If
+    
     items_ = target_sheet_.UsedRange
 
 End Function
