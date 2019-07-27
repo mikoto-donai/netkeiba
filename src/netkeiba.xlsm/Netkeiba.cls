@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "PastRace"
+Attribute VB_Name = "Netkeiba"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -14,8 +14,8 @@ Private Enum RACE_NUMBER   'レース番号
     LAST = 12
 End Enum
 
-Private netkeiba_id_ As String  'netkeiba アカウント  ex. hoge@fuga.com
-Private netkeiba_pass_ As String  'netkeiba パスワード  ex. piyo
+Private login_id_ As String  'netkeiba アカウント  ex. hoge@fuga.com
+Private login_pass_ As String  'netkeiba パスワード  ex. piyo
 
 Private race_dates_() As String  'レース日  ex. race_date(0) / 2回東京7日目
 Private race_parameters_() As String   '各レースのURLパラメータ  ex.  race_parameters_(0) / 2019050207
@@ -27,12 +27,12 @@ Private Sub Class_Initialize()
     ReDim race_places_(0)
 End Sub
 
-Public Property Let netkeiba_id(ByVal netkeiba_id As String)
-    netkeiba_id_ = netkeiba_id
+Public Property Let login_id(ByVal login_id As String)
+    login_id_ = login_id
 End Property
 
-Public Property Let netkeiba_pass(ByVal netkeiba_pass As String)
-    netkeiba_pass_ = netkeiba_pass
+Public Property Let login_pass(ByVal login_pass As String)
+    login_pass_ = login_pass
 End Property
 
 Public Property Let url(ByVal url As String)
@@ -86,11 +86,11 @@ Private Function loginNetkeiba() As Long
     Dim DOM As Object
     For Each DOM In ie.document.getElementsByTagName("input")
       If InStr(DOM.Name, "login_id") > 0 Then
-          DOM.Value = netkeiba_id_
+          DOM.Value = login_id_
       End If
       
       If InStr(DOM.Name, "pswd") > 0 Then
-          DOM.Value = netkeiba_pass_
+          DOM.Value = login_pass_
       End If
     Next
     
@@ -218,7 +218,7 @@ Private Function fetchRaceResults() As Long
         Next
         Logger.writeLog race_dates_(i) & "を取得しました"
 
-        If i = 3 Then
+        If i = 1 Then
             Exit For
         End If
             

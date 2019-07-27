@@ -7,9 +7,9 @@ On Error GoTo ErrorHandler
     Logger.initialize
     Application.DisplayAlerts = False
     
-    Dim o_past_race As New PastRace
-    o_past_race.netkeiba_id = "hoge"
-    o_past_race.netkeiba_pass = "fuga"
+    Dim o_netkeiba As New Netkeiba
+    o_netkeiba.login_id = "hoge"
+    o_netkeiba.login_pass = "fuga"
     
     Dim race_year As Long
     race_year = 2018  'æ“¾‘ÎÛ”N‚ğİ’è‚µ‚Ä‰º‚³‚¢
@@ -41,11 +41,11 @@ On Error GoTo ErrorHandler
         o_fetcher.url = race_master_url
         o_fetcher.fetchItems
         
-        o_past_race.analyzeItems race_year, o_fetcher.items
+        o_netkeiba.analyzeItems race_year, o_fetcher.items
         
         o_directory.folderName = race_year & "_" & race_places.Item(key)
-        o_directory.fileNames = o_past_race.fileNames
-        o_directory.contents = o_past_race.raceResults
+        o_directory.fileNames = o_netkeiba.fileNames
+        o_directory.contents = o_netkeiba.raceResults
         o_directory.createFiles
     Next
 
