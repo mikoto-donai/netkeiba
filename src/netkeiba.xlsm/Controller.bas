@@ -7,6 +7,10 @@ On Error GoTo ErrorHandler
     Logger.initialize
     Application.DisplayAlerts = False
     
+    Dim o_past_race As New PastRace
+    o_past_race.netkeiba_id = "hoge"
+    o_past_race.netkeiba_pass = "fuga"
+    
     Dim race_year As Long
     race_year = 2018  'æ“¾‘ÎÛ”N‚ğİ’è‚µ‚Ä‰º‚³‚¢
     
@@ -29,7 +33,6 @@ On Error GoTo ErrorHandler
     o_fetcher.configureTargetSheet targetSheetName
     
     Dim race_master_url As String
-    Dim o_past_race As New PastRace
     Dim o_directory As New Directory
     
     Dim key As Variant

@@ -13,6 +13,10 @@ Private Enum RACE_NUMBER   'レース番号
     FIRST = 1
     LAST = 12
 End Enum
+
+Private netkeiba_id_ As String  'netkeiba アカウント  ex. hoge@fuga.com
+Private netkeiba_pass_ As String  'netkeiba パスワード  ex. piyo
+
 Private race_dates_() As String  'レース日  ex. race_date(0) / 2回東京7日目
 Private race_parameters_() As String   '各レースのURLパラメータ  ex.  race_parameters_(0) / 2019050207
 Private file_names_() As String  'セル値格納先のファイル名 ex. file_names(0,1) / 2回東京7日目:2R
@@ -23,6 +27,18 @@ Private Sub Class_Initialize()
     ReDim race_places_(0)
 End Sub
 
+Public Property Let netkeiba_id(ByVal netkeiba_id As String)
+    netkeiba_id_ = netkeiba_id
+End Property
+
+Public Property Let netkeiba_pass(ByVal netkeiba_pass As String)
+    netkeiba_pass_ = netkeiba_pass
+End Property
+
+Public Property Let url(ByVal url As String)
+    url_ = url
+End Property
+
 Public Property Get fileNames() As String()
     fileNames = file_names_()
 End Property
@@ -32,7 +48,12 @@ Public Property Get raceResults() As Variant()
 End Property
 
 Public Function analyzeItems(ByVal race_year As Long, ByRef items As Variant)
-    
+        
+    If loginNetkeiba() = -1 Then
+        Err.Raise Number:=513, Description:="ログインに失敗しました"
+        Exit Function
+    End If
+        
     If createRaceDates(items) = -1 Then
         Err.Raise Number:=513, Description:="レース日の作成に失敗しました"
         Exit Function
@@ -48,6 +69,39 @@ Public Function analyzeItems(ByVal race_year As Long, ByRef items As Variant)
         Exit Function
     End If
 
+End Function
+
+Private Function loginNetkeiba() As Long
+
+    Dim ie As Object
+    Set ie = CreateObject("InternetExplorer.Application")
+    ie.Visible = False
+    
+    ie.Navigate "https://regist.netkeiba.com/account/?pid=login"
+    
+    Do While ie.Busy = True Or ie.ReadyState <> 4
+      DoEvents
+    Loop
+    
+    Dim DOM As Object
+    For Each DOM In ie.document.getElementsByTagName("input")
+      If InStr(DOM.Name, "login_id") > 0 Then
+          DOM.Value = netkeiba_id_
+      End If
+      
+      If InStr(DOM.Name, "pswd") > 0 Then
+          DOM.Value = netkeiba_pass_
+      End If
+    Next
+    
+    For Each DOM In ie.document.getElementsByTagName("input")
+      If InStr(DOM.Type, "image") > 0 Then
+          DOM.Click
+      End If
+    Next
+    
+    loginNetkeiba = 0
+ 
 End Function
 
 Private Function createRaceDates(ByRef items As Variant) As Long
