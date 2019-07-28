@@ -216,11 +216,11 @@ Private Function fetchRaceResults() As Long
             End If
             
         Next
-        Logger.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
+        FileIO.writeLog race_dates_(i) & "‚ðŽæ“¾‚µ‚Ü‚µ‚½"
 
-'        If i = 1 Then
-'            Exit For
-'        End If
+        If i = 1 Then
+            Exit For
+        End If
             
     Next
     
