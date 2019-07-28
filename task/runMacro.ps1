@@ -1,4 +1,3 @@
-
 $excel = New-Object -ComObject Excel.Application
 $excel.Visible = $False
 $workbook = $excel.workbooks.open((Convert-Path ..) + "\bin\netkeiba.xlsm")
