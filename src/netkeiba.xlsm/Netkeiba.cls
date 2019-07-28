@@ -9,18 +9,18 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Enum RACE_NUMBER   'ƒŒ[ƒX”Ô†
+Private Enum RACE_NUMBER   'ãƒ¬ãƒ¼ã‚¹ç•ªå·
     FIRST = 1
     LAST = 12
 End Enum
 
-Private login_id_ As String  'netkeiba ƒAƒJƒEƒ“ƒg  ex. hoge@fuga.com
-Private login_pass_ As String  'netkeiba ƒpƒXƒ[ƒh  ex. piyo
+Private login_id_ As String  'netkeiba ã‚¢ã‚«ã‚¦ãƒ³ãƒˆ  ex. hoge@fuga.com
+Private login_pass_ As String  'netkeiba ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰  ex. piyo
 
-Private race_dates_() As String  'ƒŒ[ƒX“ú  ex. race_date(0) / 2‰ñ“Œ‹7“ú–Ú
-Private race_parameters_() As String   'ŠeƒŒ[ƒX‚ÌURLƒpƒ‰ƒ[ƒ^  ex.  race_parameters_(0) / 2019050207
-Private file_names_() As String  'ƒZƒ‹’lŠi”[æ‚Ìƒtƒ@ƒCƒ‹–¼ ex. file_names(0,1) / 2‰ñ“Œ‹7“ú–Ú:2R
-Private race_results_() As Variant    'ƒZƒ‹’l  ex.  race_results_(0, 1) / 2‰ñ“Œ‹7“ú–Ú:2R ‚ÌƒZƒ‹’l
+Private race_dates_() As String  'ãƒ¬ãƒ¼ã‚¹æ—¥  ex. race_date(0) / 2å›æ±äº¬7æ—¥ç›®
+Private race_parameters_() As String   'å„ãƒ¬ãƒ¼ã‚¹ã®URLãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿  ex.  race_parameters_(0) / 2019050207
+Private file_names_() As String  'ã‚»ãƒ«å€¤æ ¼ç´å…ˆã®ãƒ•ã‚¡ã‚¤ãƒ«å ex. file_names(0,1) / 2å›æ±äº¬7æ—¥ç›®:2R
+Private race_results_() As Variant    'ã‚»ãƒ«å€¤  ex.  race_results_(0, 1) / 2å›æ±äº¬7æ—¥ç›®:2R ã®ã‚»ãƒ«å€¤
 
 Private Sub Class_Initialize()
     ReDim race_years_(0)
@@ -50,22 +50,22 @@ End Property
 Public Function analyzeItems(ByVal race_year As Long, ByRef items As Variant)
         
     If loginNetkeiba() = -1 Then
-        Err.Raise Number:=513, Description:="ƒƒOƒCƒ“‚É¸”s‚µ‚Ü‚µ‚½"
+        Err.Raise Number:=513, Description:="ãƒ­ã‚°ã‚¤ãƒ³ã«å¤±æ•—ã—ã¾ã—ãŸ"
         Exit Function
     End If
         
     If createRaceDates(items) = -1 Then
-        Err.Raise Number:=513, Description:="ƒŒ[ƒX“ú‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½"
+        Err.Raise Number:=513, Description:="ãƒ¬ãƒ¼ã‚¹æ—¥ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ"
         Exit Function
     End If
     
     If createRaceParameters(race_year) = -1 Then
-        Err.Raise Number:=513, Description:="ƒŒ[ƒXƒpƒ‰ƒ[ƒ^‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½"
+        Err.Raise Number:=513, Description:="ãƒ¬ãƒ¼ã‚¹ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ"
         Exit Function
     End If
     
     If fetchRaceResults() = -1 Then
-        Err.Raise Number:=513, Description:="ŠeƒŒ[ƒX‚Ìæ“¾‚É¸”sf‚µ‚Ü‚µ‚½"
+        Err.Raise Number:=513, Description:="å„ãƒ¬ãƒ¼ã‚¹ã®å–å¾—ã«å¤±æ•—â€™ã—ã¾ã—ãŸ"
         Exit Function
     End If
 
@@ -110,8 +110,8 @@ Private Function createRaceDates(ByRef items As Variant) As Long
     ReDim race_dates_(0)
     
     For i = LBound(items, 1) To UBound(items, 1)
-        If InStr(items(i, 1), "‰ñ") > 0 Then
-            race_dates_(UBound(race_dates_)) = Mid(items(i, 1), InStr(items(i, 1), " ") + 1) & "–Ú"
+        If InStr(items(i, 1), "å›") > 0 Then
+            race_dates_(UBound(race_dates_)) = Mid(items(i, 1), InStr(items(i, 1), " ") + 1) & "ç›®"
             ReDim Preserve race_dates_(UBound(race_dates_) + 1)
         End If
     Next
@@ -147,41 +147,41 @@ Private Function convertRaceDateIntoParameter(ByVal race_date As String) As Stri
     Dim event_date As String
     
     Select Case True
-        Case race_date Like "*D–y*"
+        Case race_date Like "*æœ­å¹Œ*"
             event_venue = "01"
-            event_date = Mid(race_date, InStr(race_date, "D–y") + 2)
-        Case race_date Like "*”ŸŠÙ*"
+            event_date = Mid(race_date, InStr(race_date, "æœ­å¹Œ") + 2)
+        Case race_date Like "*å‡½é¤¨*"
             event_venue = "02"
-            event_date = Mid(race_date, InStr(race_date, "”ŸŠÙ") + 2)
-        Case race_date Like "*•Ÿ“‡*"
+            event_date = Mid(race_date, InStr(race_date, "å‡½é¤¨") + 2)
+        Case race_date Like "*ç¦å³¶*"
             event_venue = "03"
-            event_date = Mid(race_date, InStr(race_date, "•Ÿ“‡") + 2)
-        Case race_date Like "*VŠƒ*"
+            event_date = Mid(race_date, InStr(race_date, "ç¦å³¶") + 2)
+        Case race_date Like "*æ–°æ½Ÿ*"
             event_venue = "04"
-            event_date = Mid(race_date, InStr(race_date, "VŠƒ") + 2)
-        Case race_date Like "*“Œ‹*"
+            event_date = Mid(race_date, InStr(race_date, "æ–°æ½Ÿ") + 2)
+        Case race_date Like "*æ±äº¬*"
             event_venue = "05"
-            event_date = Mid(race_date, InStr(race_date, "“Œ‹") + 2)
-        Case race_date Like "*’†R*"
+            event_date = Mid(race_date, InStr(race_date, "æ±äº¬") + 2)
+        Case race_date Like "*ä¸­å±±*"
             event_venue = "06"
-            event_date = Mid(race_date, InStr(race_date, "’†R") + 2)
-        Case race_date Like "*’†‹*"
+            event_date = Mid(race_date, InStr(race_date, "ä¸­å±±") + 2)
+        Case race_date Like "*ä¸­äº¬*"
             event_venue = "07"
-            event_date = Mid(race_date, InStr(race_date, "’†‹") + 2)
-        Case race_date Like "*‹“s*"
+            event_date = Mid(race_date, InStr(race_date, "ä¸­äº¬") + 2)
+        Case race_date Like "*äº¬éƒ½*"
             event_venue = "08"
-            event_date = Mid(race_date, InStr(race_date, "‹“s") + 2)
-        Case race_date Like "*ã_*"
+            event_date = Mid(race_date, InStr(race_date, "äº¬éƒ½") + 2)
+        Case race_date Like "*é˜ªç¥*"
             event_venue = "09"
-            event_date = Mid(race_date, InStr(race_date, "ã_") + 2)
-        Case race_date Like "*¬‘q*"
+            event_date = Mid(race_date, InStr(race_date, "é˜ªç¥") + 2)
+        Case race_date Like "*å°å€‰*"
             event_venue = "10"
-            event_date = Mid(race_date, InStr(race_date, "¬‘q") + 2)
+            event_date = Mid(race_date, InStr(race_date, "å°å€‰") + 2)
         Case Else
-            Err.Raise Number:=513, Description:="ƒŒ[ƒXî•ñ‚Ì•ÏŠ·‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½"
+            Err.Raise Number:=513, Description:="ãƒ¬ãƒ¼ã‚¹æƒ…å ±ã®å¤‰æ›ã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
     End Select
  
-    event_date = Format(Replace(event_date, "“ú–Ú", ""), "00")
+    event_date = Format(Replace(event_date, "æ—¥ç›®", ""), "00")
 
     convertRaceDateIntoParameter = event_venue & event_time & event_date
     
@@ -194,7 +194,7 @@ Private Function fetchRaceResults() As Long
 
     Const INSPECTION_CELL_ROW = 1
     Const INSPECTION_CELL_COLUMN = 1
-    Const INSPECTION_CELL_VALUE = "’…"
+    Const INSPECTION_CELL_VALUE = "ç€"
 
     Dim o_fetcher As New Fetcher
     Const targetSheetName = "fetched_data"
@@ -216,11 +216,11 @@ Private Function fetchRaceResults() As Long
             End If
             
         Next
-        FileIO.writeLog race_dates_(i) & "‚ğæ“¾‚µ‚Ü‚µ‚½"
+        FileIO.writeLog race_dates_(i) & "ã‚’å–å¾—ã—ã¾ã—ãŸ"
 
-        If i = 1 Then
-            Exit For
-        End If
+        'If i = 1 Then
+        '    Exit For
+        'End If
             
     Next
     
