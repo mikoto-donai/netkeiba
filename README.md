@@ -8,7 +8,13 @@
 - Microsoft Excel 2010
 
 ## 手動実行
-### Excel VBAエディタから直接実行  
+### 事前準備
+コマンドプロンプトを開きます。ルートディレクトリで下記を実行して、ソースファイルから /bin/ にExcelファイルを作成します。
+ `cscript vbac.wsf combine`  
+ 
+*本体Excelの容量が多きくなった場合は破棄して、上記コマンドを実行してExcelファイルを再度作成します*  
+
+### VBAエディタから実行  
 1. /bin/netkeiba.xlsm を起動します。初回起動時は、マクロを有効化しておきます。
 1. /user/user の1行目に、netkeiba有料アカウントのユーザーID、2行目にパスワードをそれぞれ入力します。  
 (デフォルトはユーザーID:hoge, パスワード:fuga)  
@@ -40,8 +46,8 @@ L__ 1回新潟6日目.xlsx
 # 管理方法
 ## ソース管理
 [vbac](https://github.com/vbaidiot/Ariawase)を利用して、テキストファイルの状態でGitで管理します。
-- Excelからテキストファイルに `cscript /vbac.wsf decombine`
-- テキストファイルからExcelに `cscript /vbac.wsf combine`
+- Excelからテキストファイルに `cscript vbac.wsf decombine`
+- テキストファイルからExcelに `cscript vbac.wsf combine`
 
 
 ## コーディング規約
