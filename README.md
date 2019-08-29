@@ -7,7 +7,7 @@
 - Windows10 Professional
 - Microsoft Excel 2010
 
-## 手動実行
+## 動作方法
 ### 事前準備
 コマンドプロンプトを開いて、netkeibaのルートディレクトリに移動後、下記を実行します。  
  `cscript vbac.wsf combine`  
